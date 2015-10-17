@@ -5,6 +5,8 @@ public class Quibble
 {
     public static void main(String[] args)
     {
+        System.out.println(PromptStrings.WELCOME);
 
+        Login lLogin = new Login();
     }
 }

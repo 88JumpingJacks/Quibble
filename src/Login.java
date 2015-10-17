@@ -2,6 +2,8 @@ import java.util.Scanner;
 
 /**
  * Created by jackli on 2015-10-16.
+ *
+ * Login and session selection
  */
 public class Login
 {
@@ -14,16 +16,13 @@ public class Login
     /**
      * Quibble session type
      */
-    public final String sessionType;
+    public String sessionType;
 
     /**
      * Constructor instantiates given session type
-     *
-     * @param aInSessionType session type
      */
-    public Login(String aInSessionType)
+    public Login()
     {
-        sessionType = aInSessionType;
         executeLogin();
     }
 
@@ -40,6 +39,9 @@ public class Login
         }
     }
 
+    /**
+     * Prompt for session type
+     */
     public void selectSession()
     {
         System.out.println(PromptStrings.SESSION_SELECT);
