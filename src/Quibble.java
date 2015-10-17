@@ -1,5 +1,8 @@
 /**
  * Created by jackli on 2015-10-16.
+ *
+ * Class starts the Quibble Basic Event Ticket Service software
+ * Class accepts
  */
 public class Quibble
 {

@@ -60,7 +60,7 @@ public class Login
                     break;
 
                 default:
-                    System.out.println(PromptStrings.INVALID_OPTION);
+                    System.out.println(PromptStrings.ERROR_INVALID_OPTION);
                     System.out.println(PromptStrings.SESSION_SELECT);
                     lSession = scanner.nextLine();
                     break;

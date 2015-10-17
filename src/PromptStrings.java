@@ -18,5 +18,9 @@ public class PromptStrings
     public static final String DATE = "Enter event date: ";
 
     // Error messages
-    public static final String INVALID_OPTION = "Error: Invalid option";
+    public static final String ERROR_PREFIX = "Error: ";
+    public static final String ERROR_INVALID_OPTION = ERROR_PREFIX +
+            "Invalid option";
+    public static final String ERROR_NO_CURRENT_EVENTS_FILE = ERROR_PREFIX +
+            "No current event file loaded";
 }
