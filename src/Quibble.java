@@ -5,6 +5,6 @@ public class Quibble
 {
     public static void main(String[] args)
     {
-        
+
     }
 }
