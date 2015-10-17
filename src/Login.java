@@ -3,8 +3,8 @@ import java.util.Scanner;
 /**
  * Created by jackli on 2015-10-16.
  *
- * Login and session selection
- */
+ * Login and session selection /* ----------------------TEST------------------*/
+
 public class Login
 {
 
