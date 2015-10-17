@@ -3,7 +3,8 @@ import java.util.Scanner;
 /**
  * Created by jackli on 2015-10-16.
  *
- * Login and session selection /* ----------------------TEST------------------*/
+ * Login and session selection
+ */
 
 public class Login
 {
@@ -16,7 +17,7 @@ public class Login
     /**
      * Quibble session type
      */
-    public String sessionType;
+    private String sessionType;
 
     /**
      * Constructor instantiates given session type

@@ -8,7 +8,7 @@ public class ExecuteSession
     /**
      * Quibble session type
      */
-    public final String session;
+    private final String session;
 
     /**
      * Initialize session based on constructor input
