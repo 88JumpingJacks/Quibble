@@ -8,16 +8,10 @@ import java.util.Scanner;
 
 public class Login
 {
-
     /**
      * Scanner object to accept command line input
      */
-    Scanner scanner = new Scanner(System.in);
-
-    /**
-     * Quibble session type
-     */
-    private String sessionType;
+    private Scanner scanner = new Scanner(System.in);
 
     /**
      * Constructor instantiates given session type
@@ -54,6 +48,7 @@ public class Login
                 case Constants.SALES:
                     new ExecuteSession(Constants.SALES);
                     break;
+
                 case Constants.ADMIN:
                     new ExecuteSession(Constants.ADMIN);
                     break;

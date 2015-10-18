@@ -11,11 +11,6 @@ import java.util.Map;
 public class Quibble
 {
     /**
-     * This is a special event name with 0 tickets that should be at the end
-     * of current events file to denote the end of file
-     */
-    static String END_EVENT = "END_0";
-    /**
      * Map to store current event name and number of tickets
      * This info is read from the current events file
      */
@@ -41,7 +36,7 @@ public class Quibble
 
             while ((lCurrentLine = lBufferedReader.readLine()) != null)
             {
-                if (lCurrentLine.equals(END_EVENT))
+                if (lCurrentLine.equals(Constants.END_EVENT))
                 {
                     break;
                 }
@@ -71,6 +66,6 @@ public class Quibble
         }
 
         // Begin session login procedure
-        Login lLogin = new Login();
+        new Login();
     }
 }
