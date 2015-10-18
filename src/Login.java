@@ -34,7 +34,7 @@ public class Login
     {
         String lIn = scanner.nextLine();
 
-        if (lIn.equals(PromptStrings.LOGIN))
+        if (lIn.equals(Constants.LOGIN))
         {
             selectSession();
         }
@@ -45,24 +45,22 @@ public class Login
      */
     public void selectSession()
     {
-        System.out.println(PromptStrings.SESSION_SELECT);
+        System.out.println(Constants.SESSION_SELECT);
         String lSession = scanner.nextLine();
-        boolean lIsCorrectType = false;
-
-        while (!lIsCorrectType)
+        while (true)
         {
             switch (lSession)
             {
-                case PromptStrings.SALES:
-                    new ExecuteSession(PromptStrings.SALES);
+                case Constants.SALES:
+                    new ExecuteSession(Constants.SALES);
                     break;
-                case PromptStrings.ADMIN:
-                    new ExecuteSession(PromptStrings.ADMIN);
+                case Constants.ADMIN:
+                    new ExecuteSession(Constants.ADMIN);
                     break;
 
                 default:
-                    System.out.println(PromptStrings.ERROR_INVALID_OPTION);
-                    System.out.println(PromptStrings.SESSION_SELECT);
+                    System.out.println(Constants.ERROR_INVALID_OPTION);
+                    System.out.println(Constants.SESSION_SELECT);
                     lSession = scanner.nextLine();
                     break;
             }

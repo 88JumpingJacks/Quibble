@@ -19,17 +19,18 @@ public class ExecuteSession
     {
         session = aInSessionType;
 
-        if (session.equals(PromptStrings.SALES))
+        switch (session)
         {
+            //todo
+            case Constants.SALES:
 
-        }
-        else if (session.equals(PromptStrings.ADMIN))
-        {
+                break;
+            case Constants.ADMIN:
 
-        }
-        else
-        {
-            // todo error invalid option
+                break;
+            default:
+
+                break;
         }
     }
 
