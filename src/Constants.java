@@ -1,6 +1,6 @@
 /**
  * Created by jackli on 2015-10-18.
- *
+ * <p>
  * Class of String constants for Quibble prompts, commands and messages
  */
 public class Constants
@@ -40,14 +40,21 @@ public class Constants
     public static final String ERROR_READ_FILE = ERROR_PREFIX +
             "Problem reading file";
     public static final String ERROR_SALES_EXCEED_MAX_TICKETS = ERROR_PREFIX +
-            "Cannot sell more than "+SALES_MAX_TICKETS+" tickets in one transaction";
-    public static final String ERROR_EXCEED_MAX_EVENT_NAME_LENGTH = ERROR_PREFIX +
-            "Event name cannot exceed "+MAX_EVENT_NAME_LENGTH+" characters";
+            "Cannot sell more than " + SALES_MAX_TICKETS + " tickets in one " +
+            "transaction";
+    public static final String ERROR_EXCEED_MAX_EVENT_NAME_LENGTH =
+            ERROR_PREFIX + "Event name cannot exceed " +
+                    MAX_EVENT_NAME_LENGTH + " characters";
     public static final String ERROR_EXCEED_MAX_EVENT_TICKETS = ERROR_PREFIX +
-            "Event cannot have more than "+ MAX_EVENT_TICKETS;
+            "Event cannot have more than " + MAX_EVENT_TICKETS;
+    public static final String ERROR_EVENT_DOES_NOT_EXIST = ERROR_PREFIX +
+            "Event does not exist";
+    public static final String ERROR_SELL_MORE_TICKETS_THAN_AVAILABLE =
+            ERROR_PREFIX + "Cannot sell more tickets than are currently " +
+                    "available";
 
     // Current Events file constant
-    public static final String LINE_SEPARATOR = "_";
+    public static final String EVENT_LINE_SEPARATOR = "_";
 
     /**
      * This is a special event name with 0 tickets that should be at the end

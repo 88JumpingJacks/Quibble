@@ -48,9 +48,9 @@ public class Quibble
                 // Assign the event name as key and the number of tickets as
                 // value to the currentEventsMap
                 lEventName = lCurrentLine.substring(0, lCurrentLine
-                        .lastIndexOf(Constants.LINE_SEPARATOR));
+                        .lastIndexOf(Constants.EVENT_LINE_SEPARATOR));
                 lNumberTickets = lCurrentLine.substring(lCurrentLine.lastIndexOf
-                        (Constants.LINE_SEPARATOR) + 1);
+                        (Constants.EVENT_LINE_SEPARATOR) + 1);
 
                 currentEventsMap.put(lEventName,
                         Integer.parseInt(lNumberTickets));
@@ -68,4 +68,29 @@ public class Quibble
         // Begin session login procedure
         new Login();
     }
+
+    /**
+     * Return whether the specified event is a current event
+     *
+     * @param aInEvent Event name
+     * @return true if event is current, false otherwise
+     */
+    public static boolean isEvent(String aInEvent)
+    {
+        return currentEventsMap.containsKey(aInEvent.replace(" ", Constants
+                .EVENT_LINE_SEPARATOR));
+    }
+
+    /**
+     * Return number of tickets available for specified event
+     * User should check that event exists before calling this method
+     *
+     * @param aInEvent Event name
+     * @return int - Number of tickets available for event as
+     */
+    public static int getNumberTicketsAvailable(String aInEvent)
+    {
+        return currentEventsMap.get(aInEvent);
+    }
+
 }
