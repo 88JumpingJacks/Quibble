@@ -54,13 +54,11 @@ public class Constants
                     "available";
 
     // Current Events file constant
-    public static final String EVENT_LINE_SEPARATOR = "_";
+    public static final String SPACE = " ";
 
-    /**
-     * This is a special event name with 0 tickets that should be at the end
-     * of current events file to denote the end of file
-     */
-    public static final String END_EVENT = "END_0";
+    // This is a special event name with 0 tickets that should be at the end
+    // of current events file to denote the end of file
+    public static final String END_EVENT = "END                  00000";
 
 
 }
