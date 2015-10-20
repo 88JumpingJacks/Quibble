@@ -21,7 +21,7 @@ public class Constants
 
     // Quibble component prompt Strings
     public static final String EVENT_NAME = "Enter event name: ";
-    public static final String NUMBER_TICKETS = "Enter number of tickets ";
+    public static final String NUMBER_TICKETS = "Enter number of tickets: ";
     public static final String DATE = "Enter event date: ";
 
     // Components constraints constants

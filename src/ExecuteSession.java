@@ -41,8 +41,6 @@ public class ExecuteSession
      */
     public void runSales()
     {
-        boolean lIslogout = false;
-
         // Temporary variable to store event name input
         String lTempEvent;
 
@@ -52,7 +50,8 @@ public class ExecuteSession
         // Command line input
         String lCommandIn;
 
-        while (!lIslogout)
+        // Continue to allow user to enter commands until they logout
+        while (true)
         {
             lCommandIn = ""; // Reassign lCommandIn to empty String in case
                              // previous loop value is still stored
@@ -63,7 +62,7 @@ public class ExecuteSession
                 case Constants.SELL:
                     System.out.println(Constants.EVENT_NAME);
                     lTempEvent = sessionScanner.nextLine();
-                    if (!Quibble.isEvent(lTempEvent))
+                    if (!SessionTransactions.isEvent(lTempEvent))
                     {
                         System.out.println(Constants
                                 .ERROR_EVENT_DOES_NOT_EXIST);
@@ -79,12 +78,14 @@ public class ExecuteSession
                                 .ERROR_SALES_EXCEED_MAX_TICKETS);
                         break;
                     }
+
+                    Components.sell(lTempEvent, lTempNumberTickets);
                     break;
 
                 case Constants.RETURN:
                     System.out.println(Constants.EVENT_NAME);
                     lTempEvent = sessionScanner.nextLine();
-                    if (!Quibble.isEvent(lTempEvent))
+                    if (!SessionTransactions.isEvent(lTempEvent))
                     {
                         System.out.println(Constants
                                 .ERROR_EVENT_DOES_NOT_EXIST);
@@ -94,13 +95,13 @@ public class ExecuteSession
                     System.out.println(Constants.NUMBER_TICKETS);
                     lTempNumberTickets = Integer.parseInt(sessionScanner
                             .nextLine());
-                    if (!Quibble.isEvent(lTempEvent))
+                    if (!SessionTransactions.isEvent(lTempEvent))
                     {
                         System.out.println(Constants
                                 .ERROR_EVENT_DOES_NOT_EXIST);
                         break;
                     }
-                    else if (lTempNumberTickets > Quibble
+                    else if (lTempNumberTickets > SessionTransactions
                             .getNumberTicketsAvailable(lTempEvent))
                     {
                         System.out.println(Constants
@@ -113,14 +114,12 @@ public class ExecuteSession
                                 .ERROR_SALES_EXCEED_MAX_TICKETS);
                         break;
                     }
+
+                    Components.returnTickets(lTempEvent, lTempNumberTickets);
                     break;
 
                 case Constants.LOGOUT:
-                    lIslogout = true;
-                    // todo in future releases, implement writing to the daily
-                    // todo event transaction file
-                    // todo For now, just terminate the program
-                    System.exit(1);
+                    Components.logout();
                     break;
 
                 default:
