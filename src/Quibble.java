@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class Quibble
 {
-    /**
+     /**
      * Stores current events and number of tickets read from current events file
      * This map is not changed after being populated the first time
      */

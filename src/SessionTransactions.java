@@ -4,7 +4,7 @@ import java.util.Map;
 /**
  * Created by jackli on 2015-10-20.
  *
- * This class stores updates from transactions to events
+ *  This class stores updates from transactions to events
  */
 public class SessionTransactions
 {

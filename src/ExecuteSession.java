@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 /**
  * Created by jackli on 2015-10-16.
- *  <p>
+ *   <p>
  * Commence session type that the class is instantiated with
  * TODO - Note: Error checking is minimal in this release as it rapidly built
  * TODO as a proof of concept

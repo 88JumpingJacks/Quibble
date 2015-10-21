@@ -2,7 +2,7 @@
  * Created by jackli on 2015-10-16.
  * <p>
  * This class provides base SessionTransactions component functions.
- * <p>
+ *  <p>
  * NOTE: Privilege checking is not done here and logic for checking session
  * privileges for each component should be done in the calling class.
  * Additionally, constraint checking including on the limits of what a

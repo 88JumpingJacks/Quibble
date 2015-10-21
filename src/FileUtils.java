@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by jackli on 2015-10-19.
  *  <p>
- * Class of File utility methods
+ *  Class of File utility methods
  * This class is also intended to contain methods for backend file processing
  * that will be implemented in future releases
  */
