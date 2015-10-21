@@ -1,6 +1,6 @@
 /**
  * Created by jackli on 2015-10-18.
- * <p>
+ *  <p>
  * Class of String constants for Quibble prompts, commands and messages
  */
 public class Constants
