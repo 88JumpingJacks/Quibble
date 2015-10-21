@@ -6,7 +6,6 @@
 public class Constants
 {
     // Login and session related Strings
-    public static final String WELCOME = "Welcome to Quibble!";
     public static final String LOGIN = "login";
     public static final String SESSION_SELECT = "Enter the type of session: ";
     public static final String SALES = "sales";
@@ -38,8 +37,6 @@ public class Constants
     // Error messages
     public static final String ERROR_INVALID_OPTION = ERROR_PREFIX +
             "Invalid option";
-    public static final String ERROR_NO_CURRENT_EVENTS_FILE = ERROR_PREFIX +
-            "No current event file loaded";
     public static final String ERROR_READ_FILE = ERROR_PREFIX +
             "Problem reading file";
     public static final String ERROR_SALES_EXCEED_MAX_TICKETS = ERROR_PREFIX +
@@ -54,8 +51,6 @@ public class Constants
             "Event cannot have more than " + MAX_EVENT_TICKETS;
     public static final String ERROR_EVENT_DOES_NOT_EXIST = ERROR_PREFIX +
             "Event does not exist";
-    public static final String ERROR_EVENT_ALREADY_EXISTS = ERROR_PREFIX +
-            "Event alrady exists";
     public static final String ERROR_SELL_MORE_TICKETS_THAN_AVAILABLE =
             ERROR_PREFIX + "Cannot sell more tickets than are currently " +
                     "available";
@@ -63,14 +58,5 @@ public class Constants
             "Cannot have negative number of tickets";
     public static final String ERROR_INVALID_INPUT = ERROR_PREFIX +
             "Invalid input";
-
-    // Current Events file constant
-    public static final String SPACE = " ";
-
-    // This is a special event name with 0 tickets that should be at the end
-    // of current events file to denote the end of file
-    public static final String END_EVENT = "END                  00000";
-
-
 }
 
