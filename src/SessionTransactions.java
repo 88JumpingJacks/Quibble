@@ -29,12 +29,12 @@ public class SessionTransactions
     /**
      * Return whether the specified event is a current event
      *
-     * @param aInEvent Event name
+     * @param aInKey Event name
      * @return true if event is current, false otherwise
      */
-    public static boolean isEvent(String aInEvent)
+    public static boolean isKey(String aInKey)
     {
-        return currentEventsMap.containsKey(aInEvent.replace(" ", Constants
+        return currentEventsMap.containsKey(aInKey.replace(" ", Constants
                 .SPACE));
     }
 
@@ -42,24 +42,34 @@ public class SessionTransactions
      * Return number of tickets available for specified event
      * User should check that event exists before calling this method
      *
-     * @param aInEvent Event name
-     * @return int - Number of tickets available for event as
+     * @param aInKey Event name
+     * @return int - Number of tickets available for event according to the current events file
      */
-    public static int getNumberTicketsAvailable(String aInEvent)
+    public static int getValue(String aInKey)
     {
-        return currentEventsMap.get(aInEvent);
+        return Quibble.getNumberTicketsOriginal(aInKey);
     }
 
     /**
      * Set number of tickets for an event.
      * The calling class should check that the event exists
      *
-     * @param aInEvent
-     * @param aInNumberTickets
+     * @param aInKey
+     * @param aInValue
      */
-    public static void setNumberOfTickets(String aInEvent, int aInNumberTickets)
+    public static void setValue(String aInKey, int aInValue)
     {
-        currentEventsMap.put(aInEvent, aInNumberTickets);
+        currentEventsMap.put(aInKey, aInValue);
+    }
+
+    /**
+     * Add key and value to currentEventsMap
+     *
+     * @param aInKey
+     */
+    public static void addKeyValue(String aInKey, int aInValue)
+    {
+        currentEventsMap.put(aInKey, aInValue);
     }
 
     /**

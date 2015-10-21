@@ -26,11 +26,18 @@ public class Login
      */
     public void executeLogin()
     {
-        String lIn = scanner.nextLine();
+        String lIn;
 
-        if (lIn.equals(Constants.LOGIN))
+        while (true)
         {
-            selectSession();
+            lIn = scanner.nextLine();
+
+            if (lIn.equals(Constants.LOGIN))
+            {
+                selectSession();
+            }
+
+            System.out.println(Constants.ERROR_INVALID_OPTION);
         }
     }
 

@@ -28,4 +28,14 @@ public class Quibble
         // Begin session login procedure
         Components.login();
     }
+
+    /**
+     * Gets number of tickets for the event from the original map
+     * @param aInEventName
+     * @return Number of tickets for the event from the original map
+     */
+    public static int getNumberTicketsOriginal(String aInEventName)
+    {
+        return originalEventsMap.get(aInEventName);
+    }
 }

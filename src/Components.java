@@ -5,8 +5,9 @@
  * <p>
  * NOTE: Privilege checking is not done here and logic for checking session
  * privileges for each component should be done in the calling class.
- * Additionally, constraint checking on the limits of what a particular session
- * can do for a given component should also be done in the calling class.
+ * Additionally, constraint checking including on the limits of what a
+ * particular session can do for a given component should also be done in the
+ * calling class.
  */
 public class Components
 {
@@ -37,8 +38,11 @@ public class Components
      */
     public static void sell(String aInEventName, int aInNumberTickets)
     {
-        SessionTransactions.setNumberOfTickets(aInEventName, (SessionTransactions
-                .getNumberTicketsAvailable(aInEventName) - aInNumberTickets));
+        // todo do not allow sales for an event created in the current session
+        SessionTransactions.setValue(aInEventName,
+                (SessionTransactions
+                        .getValue(aInEventName) -
+                        aInNumberTickets));
     }
 
     /**
@@ -52,8 +56,9 @@ public class Components
     {
         // todo Check that there are enough tickets to return
 
-        SessionTransactions.setNumberOfTickets(aInEventName, (SessionTransactions
-                .getNumberTicketsAvailable(aInEventName) + aInNumberTickets));
+        SessionTransactions.setValue(aInEventName,
+                (SessionTransactions.getValue(aInEventName)
+                        + aInNumberTickets));
     }
 
     /**
@@ -88,11 +93,9 @@ public class Components
      */
     public static void add(String aInEventName, int aInNumberTickets)
     {
-        // todo check that adding tickets does not exceed the maximum allowed
-
-        SessionTransactions.setNumberOfTickets(aInEventName, (SessionTransactions
-                .getNumberTicketsAvailable(aInEventName) + aInNumberTickets));
-
+        SessionTransactions.setValue(aInEventName,
+                (SessionTransactions.getValue(aInEventName) +
+                        aInNumberTickets));
     }
 
     /**
