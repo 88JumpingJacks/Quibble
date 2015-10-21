@@ -16,7 +16,7 @@ public class Components
      */
     public static void login()
     {
-        new Login();
+        new ExecuteSession();
     }
 
     /**

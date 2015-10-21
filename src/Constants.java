@@ -61,6 +61,8 @@ public class Constants
                     "available";
     public static final String ERROR_NEGATIVE_TICKETS = ERROR_PREFIX +
             "Cannot have negative number of tickets";
+    public static final String ERROR_INVALID_INPUT = ERROR_PREFIX +
+            "Invalid input";
 
     // Current Events file constant
     public static final String SPACE = " ";

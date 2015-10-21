@@ -4,7 +4,8 @@ import java.util.Scanner;
  * Created by jackli on 2015-10-16.
  * <p>
  * Commence session type that the class is instantiated with
- * TODO - Note: Error checking is minimal in this release
+ * TODO - Note: Error checking is minimal in this release as it rapidly built
+ * TODO as a proof of concept
  */
 public class ExecuteSession
 {
@@ -15,24 +16,67 @@ public class ExecuteSession
 
     /**
      * Initialize session based on constructor input
-     *
-     * @param aInSessionType session type
      */
-    public ExecuteSession(String aInSessionType)
+    public ExecuteSession()
     {
-        switch (aInSessionType)
+        executeLogin();
+
+        selectSession();
+    }
+
+    /**
+     * Accept "login" command, start session selection
+     */
+    public void executeLogin()
+    {
+        String lIn;
+        boolean lIsLogin = false;
+
+        while (!lIsLogin)
         {
-            case Constants.SALES:
-                runSales();
-                break;
+            lIn = sessionScanner.nextLine();
 
-            case Constants.ADMIN:
-                runAdmin();
-                break;
+            if (lIn.equals(Constants.LOGIN))
+            {
+                selectSession();
+                lIsLogin = true;
+            }
+            else
+            {
+                System.out.println(Constants.ERROR_INVALID_OPTION);
+            }
+        }
+    }
 
-            default:
-                //Should not reach, valid input already checked in Login class
-                break;
+    /**
+     * Prompt for session type
+     */
+    public void selectSession()
+    {
+        System.out.println(Constants.SESSION_SELECT);
+        String lSession = sessionScanner.nextLine();
+        boolean lIsSessionSelected = false;
+
+        while (!lIsSessionSelected)
+        {
+            switch (lSession)
+            {
+                case Constants.SALES:
+                    runSales();
+                    lIsSessionSelected = true;
+                    break;
+
+                case Constants.ADMIN:
+                    runAdmin();
+                    lIsSessionSelected = true;
+                    break;
+
+                default:
+                    System.out.println(Constants.ERROR_INVALID_OPTION);
+                    System.out.println(Constants.SESSION_SELECT);
+                    lSession = sessionScanner.nextLine();
+                    break;
+            }
         }
     }
 
@@ -50,8 +94,10 @@ public class ExecuteSession
         // Command line input
         String lCommandIn;
 
+        boolean lIsLogout = false;
+
         // Continue to allow user to enter commands until they logout
-        while (true)
+        while (!lIsLogout)
         {
             lCommandIn = ""; // Reassign lCommandIn to empty String in case
             // previous loop value is still stored
@@ -120,6 +166,7 @@ public class ExecuteSession
 
                 case Constants.LOGOUT:
                     Components.logout();
+                    lIsLogout = true;
                     break;
 
                 default:
@@ -146,8 +193,10 @@ public class ExecuteSession
         // Command line input
         String lCommandIn;
 
+        boolean lIsLogout = false;
+
         // Continue to allow user to enter commands until they logout
-        while (true)
+        while (!lIsLogout)
         {
             lCommandIn = ""; // Reassign lCommandIn to empty String in case
             // previous loop value is still stored
@@ -222,22 +271,34 @@ public class ExecuteSession
                     // todo check date format
 
                     System.out.println(Constants.PROMPT_NUMBER_TICKETS);
-                    lTempNumberTickets = sessionScanner.nextInt();
-                    if (lTempNumberTickets < 0)
+
+                    // Take nextLine() instead of nextInt() in case user doesn't
+                    // input a number, the input will still be accepted and
+                    // the appropriate error message will show
+                    try
                     {
-                        System.out.println(Constants.ERROR_NEGATIVE_TICKETS);
-                        break;
+                        lTempNumberTickets = Integer.parseInt(sessionScanner
+                                .nextLine());
+                        if (lTempNumberTickets < 0)
+                        {
+                            System.out.println(Constants.ERROR_NEGATIVE_TICKETS);
+                            break;
+                        }
+                        else if (lTempNumberTickets > Constants.MAX_EVENT_TICKETS)
+                        {
+                            System.out.println(Constants
+                                    .ERROR_EXCEED_MAX_EVENT_TICKETS);
+                            break;
+                        }
                     }
-                    else if (lTempNumberTickets > Constants.MAX_EVENT_TICKETS)
+                    catch (NumberFormatException e)
                     {
-                        System.out.println(Constants
-                                .ERROR_EXCEED_MAX_EVENT_TICKETS);
+                        System.out.println(Constants.ERROR_INVALID_INPUT);
                         break;
                     }
 
                     Components.create(lTempEvent, lTempDate,
                             lTempNumberTickets);
-                    System.out.println("YO");
                     break;
 
                 case Constants.ADD:
@@ -278,6 +339,7 @@ public class ExecuteSession
 
                 case Constants.LOGOUT:
                     Components.logout();
+                    lIsLogout = true;
                     break;
 
                 default:

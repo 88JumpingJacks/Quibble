@@ -23,7 +23,7 @@ public class SessionTransactions
      */
     public SessionTransactions(Map<String, Integer> aInMap)
     {
-        currentEventsMap = new HashMap<String, Integer>(aInMap);
+        currentEventsMap = new HashMap<>(aInMap);
     }
 
     /**
@@ -34,8 +34,7 @@ public class SessionTransactions
      */
     public static boolean isKey(String aInKey)
     {
-        return currentEventsMap.containsKey(aInKey.replace(" ", Constants
-                .SPACE));
+        return currentEventsMap.containsKey(aInKey);
     }
 
     /**
