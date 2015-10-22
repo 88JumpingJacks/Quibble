@@ -165,6 +165,8 @@ public class Quibble
                 lFW.write(dailyEventTransactions.get(lCounter).toString());
             }
 
+            // todo Get this new line working
+            lFW.write(System.getProperty("line.separator"));
             lFW.close();
 
             outputFile.createNewFile();
@@ -298,7 +300,8 @@ public class Quibble
                     }
 
                     sell(lTempEvent, lTempNumberTickets);
-                    buildTransaction("01", lTempEvent, lTempNumberTickets);
+                    dailyEventTransactions.add(buildTransaction("01",
+                            lTempEvent, lTempNumberTickets));
                     break;
 
                 case Constants.RETURN:
@@ -335,6 +338,8 @@ public class Quibble
                     }
 
                     returnTickets(lTempEvent, lTempNumberTickets);
+                    dailyEventTransactions.add(buildTransaction("02",
+                            lTempEvent, lTempNumberTickets));
                     break;
 
                 case Constants.CREATE:
@@ -392,6 +397,8 @@ public class Quibble
 
                     create(lTempEvent, lTempDate,
                             lTempNumberTickets);
+                    dailyEventTransactions.add(buildTransaction("03",
+                            lTempEvent, lTempNumberTickets));
                     break;
 
                 case Constants.ADD:
@@ -421,6 +428,8 @@ public class Quibble
                     }
 
                     add(lTempEvent, lTempNumberTickets);
+                    dailyEventTransactions.add(buildTransaction("04",
+                            lTempEvent, lTempNumberTickets));
                     break;
 
                 case Constants.DELETE:
@@ -440,6 +449,8 @@ public class Quibble
                     }
 
                     delete(lTempEvent);
+                    dailyEventTransactions.add(buildTransaction("05",
+                            lTempEvent, 0));
                     break;
 
                 case Constants.LOGOUT:
@@ -474,6 +485,8 @@ public class Quibble
         aOutTransaction.append(aInTransactionCode + " ");
 
         // Append event name
+        aOutTransaction.append(aInEvent);
+
         int lNumSpaces = Constants.MAX_EVENT_NAME_LENGTH - aInEvent
                 .length();
 
@@ -484,6 +497,14 @@ public class Quibble
         aOutTransaction.append(" ");
 
         // Append number of tickets
+        for (int lNum = 10; lNum <= 10000; lNum *= 10)
+        {
+            if ((aInNumberTickets % lNum) != 0)
+            {
+                aOutTransaction.append(0);
+            }
+        }
+
         aOutTransaction.append(aInNumberTickets);
 
         return aOutTransaction;
