@@ -57,7 +57,6 @@ public class Quibble
             String lCurrentLine;
             String lEventName;
             String lNumberTickets;
-            String[] lLineArray;
 
             while ((lCurrentLine = lBufferedReader.readLine()) != null)
             {
