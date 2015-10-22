@@ -165,8 +165,7 @@ public class Quibble
                 lFW.write(dailyEventTransactions.get(lCounter).toString());
             }
 
-            // todo Get this new line working
-            lFW.write(System.getProperty("line.separator"));
+            // todo get writing new line working
             lFW.close();
 
             outputFile.createNewFile();
