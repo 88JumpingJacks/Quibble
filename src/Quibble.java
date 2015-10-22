@@ -1,10 +1,7 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import com.sun.tools.internal.jxc.ap.Const;
+
+import java.io.*;
+import java.util.*;
 
 /**
  * Created by jackli on 2015-10-16.
@@ -24,6 +21,19 @@ public class Quibble
      * This map is not changed after being populated the first time
      */
     private static Map<String, Integer> eventsMap = new HashMap<>();
+
+    /**
+     * Stores transactions from current session that will be written to the
+     * output file upon session termination
+     */
+    private static List<StringBuilder> dailyEventTransactions = new
+            ArrayList<>();
+
+    /**
+     * Output file that is created upon logout
+     */
+    private static File outputFile = new File
+            ("../QuibbleExtreme/eventTransactions");
 
     /**
      * Start Quibble session, process current events file
@@ -139,10 +149,31 @@ public class Quibble
 
     /**
      * Logout and end session
+     * Write the transactions to the output file
      */
     public static void logout()
     {
+        FileWriter lFW;
 
+        try
+        {
+            lFW = new FileWriter(outputFile);
+
+            for (int lCounter = 0; lCounter < dailyEventTransactions.size();
+                 lCounter++)
+            {
+                lFW.write(dailyEventTransactions.get(lCounter).toString());
+            }
+
+            lFW.close();
+
+            outputFile.createNewFile();
+        }
+        catch (IOException e)
+        {
+            System.out.println("1: " + Constants.ERROR_OUTPUT_FILE_ERROR);
+            System.exit(1);
+        }
 
         System.exit(0);
     }
@@ -182,6 +213,7 @@ public class Quibble
     public static void create(String aInEventName, String aInDate, int
             aInNumberTickets)
     {
+        // todo cannot implement because there is no backend in this phase
     }
 
     /**
@@ -220,6 +252,10 @@ public class Quibble
 
         // Temporary variable to store number of tickets input
         int lTempNumberTickets;
+
+        // Stores individual transactions to be added to
+        // dailyEventTransactions List
+        StringBuilder lTransaction = new StringBuilder();
 
         // Command line input
         String lCommandIn;
@@ -262,6 +298,7 @@ public class Quibble
                     }
 
                     sell(lTempEvent, lTempNumberTickets);
+                    buildTransaction("01", lTempEvent, lTempNumberTickets);
                     break;
 
                 case Constants.RETURN:
@@ -412,6 +449,43 @@ public class Quibble
                     System.out.println(Constants.ERROR_INVALID_OPTION);
                     break;
             }
+
+            // Clear the StringBuilder
+            lTransaction.setLength(0);
         }
+    }
+
+    /**
+     * Format parameter values and return a StringBuilder representing the
+     * transaction
+     *
+     * @param aInTransactionCode
+     * @param aInEvent
+     * @param aInNumberTickets
+     * @return StringBuilder representing the transaction
+     */
+    public static StringBuilder buildTransaction(String aInTransactionCode,
+                                                 String aInEvent, int
+                                                         aInNumberTickets)
+    {
+        StringBuilder aOutTransaction = new StringBuilder();
+
+        // Append transaction code
+        aOutTransaction.append(aInTransactionCode + " ");
+
+        // Append event name
+        int lNumSpaces = Constants.MAX_EVENT_NAME_LENGTH - aInEvent
+                .length();
+
+        for (int lCounter = 0; lCounter < lNumSpaces; lCounter++)
+        {
+            aOutTransaction.append(" ");
+        }
+        aOutTransaction.append(" ");
+
+        // Append number of tickets
+        aOutTransaction.append(aInNumberTickets);
+
+        return aOutTransaction;
     }
 }

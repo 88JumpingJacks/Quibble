@@ -58,5 +58,7 @@ public class Constants
             "Cannot have negative number of tickets";
     public static final String ERROR_INVALID_INPUT = ERROR_PREFIX +
             "Invalid input";
+    public static final String ERROR_OUTPUT_FILE_ERROR = ERROR_PREFIX +
+            "Output file error";
 }
 
