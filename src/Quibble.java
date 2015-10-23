@@ -1,5 +1,3 @@
-import com.sun.tools.internal.jxc.ap.Const;
-
 import java.io.*;
 import java.util.*;
 
@@ -156,22 +154,26 @@ public class Quibble
 
         try
         {
-            lFW = new FileWriter(outputFile);
+            lFW = new FileWriter(outputFile, true);
 
             for (int lCounter = 0; lCounter < dailyEventTransactions.size();
                  lCounter++)
             {
                 lFW.write(dailyEventTransactions.get(lCounter).toString());
+                lFW.write(String.format("%n"));
             }
 
-            // todo get writing new line working
+            // Write logout transaction
+            lFW.write("00                       000000 00000");
+            lFW.write(String.format("%n"));
+
             lFW.close();
 
             outputFile.createNewFile();
         }
         catch (IOException e)
         {
-            System.out.println("1: " + Constants.ERROR_OUTPUT_FILE_ERROR);
+            System.out.println(Constants.ERROR_OUTPUT_FILE_ERROR);
             System.exit(1);
         }
 
@@ -224,6 +226,7 @@ public class Quibble
      */
     public static void add(String aInEventName, int aInNumberTickets)
     {
+        // Call returnTickets() because the login is the same
         returnTickets(aInEventName, aInNumberTickets);
     }
 
@@ -299,7 +302,7 @@ public class Quibble
 
                     sell(lTempEvent, lTempNumberTickets);
                     dailyEventTransactions.add(buildTransaction("01",
-                            lTempEvent, lTempNumberTickets));
+                            lTempEvent, "000000", lTempNumberTickets));
                     break;
 
                 case Constants.RETURN:
@@ -337,7 +340,7 @@ public class Quibble
 
                     returnTickets(lTempEvent, lTempNumberTickets);
                     dailyEventTransactions.add(buildTransaction("02",
-                            lTempEvent, lTempNumberTickets));
+                            lTempEvent, "000000", lTempNumberTickets));
                     break;
 
                 case Constants.CREATE:
@@ -396,7 +399,7 @@ public class Quibble
                     create(lTempEvent, lTempDate,
                             lTempNumberTickets);
                     dailyEventTransactions.add(buildTransaction("03",
-                            lTempEvent, lTempNumberTickets));
+                            lTempEvent, lTempDate, lTempNumberTickets));
                     break;
 
                 case Constants.ADD:
@@ -427,7 +430,7 @@ public class Quibble
 
                     add(lTempEvent, lTempNumberTickets);
                     dailyEventTransactions.add(buildTransaction("04",
-                            lTempEvent, lTempNumberTickets));
+                            lTempEvent, "000000", lTempNumberTickets));
                     break;
 
                 case Constants.DELETE:
@@ -448,7 +451,7 @@ public class Quibble
 
                     delete(lTempEvent);
                     dailyEventTransactions.add(buildTransaction("05",
-                            lTempEvent, 0));
+                            lTempEvent, "000000", 0));
                     break;
 
                 case Constants.LOGOUT:
@@ -474,7 +477,8 @@ public class Quibble
      * @return StringBuilder representing the transaction
      */
     public static StringBuilder buildTransaction(String aInTransactionCode,
-                                                 String aInEvent, int
+                                                 String aInEvent, String
+                                                         aInEventDate, int
                                                          aInNumberTickets)
     {
         StringBuilder aOutTransaction = new StringBuilder();
@@ -494,13 +498,17 @@ public class Quibble
         }
         aOutTransaction.append(" ");
 
+        // Append event date
+        aOutTransaction.append(" ");
+        aOutTransaction.append(aInEventDate);
+        aOutTransaction.append(" ");
+
         // Append number of tickets
-        for (int lNum = 10; lNum <= 10000; lNum *= 10)
+        int lNumZeros = 5 - String.valueOf(aInNumberTickets).length();
+
+        for (int lCounter = 0; lCounter < lNumZeros; lCounter++)
         {
-            if ((aInNumberTickets % lNum) != 0)
-            {
-                aOutTransaction.append(0);
-            }
+            aOutTransaction.append(0);
         }
 
         aOutTransaction.append(aInNumberTickets);
