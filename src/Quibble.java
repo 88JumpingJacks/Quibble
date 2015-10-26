@@ -4,8 +4,10 @@ import java.util.*;
 /**
  * Created by jackli on 2015-10-16.
  * <p>
- * Class accepts current events file, starts and runs the Quibble Basic Event
- * Ticket Service software
+ * Class accepts current events file, starts, runs the Quibble Basic Event
+ * Ticket Service software and creates an event transactions file detailing
+ * the session's transactions upon logout.
+ * Quibble component functionality is also defined here.
  */
 public class Quibble
 {
@@ -30,13 +32,18 @@ public class Quibble
     /**
      * Output file that is created upon logout
      */
-    private static File outputFile = new File
-            ("../QuibbleExtreme/eventTransactions");
+    private static File outputFile = new File ("../eventTransactions");
 
     /**
-     * Start Quibble session, process current events file
+     * Start Quibble session
+     * <p>
+     * Accepts current events file path as parameter, processes event and
+     * number of tickets info, stores this in eventsMap HashMap so the info
+     * is easily accessible during session execution. Start Quibble session,
+     * process current events file. Calls login(), sessionSelection() and
+     * sessionExecute()
      *
-     * @param args Current events file
+     * @param args Current events file path
      */
     public static void main(String[] args)
     {
@@ -88,7 +95,7 @@ public class Quibble
         }
 
         login();
-        componentSelection(sessionSelection());
+        sessionExecute(sessionSelection());
     }
 
     /**
@@ -146,7 +153,7 @@ public class Quibble
 
     /**
      * Logout and end session
-     * Write the transactions to the output file
+     * Write the session's transactions to the output file
      */
     public static void logout()
     {
@@ -245,7 +252,7 @@ public class Quibble
      *
      * @param aInSessionType Session type
      */
-    public static void componentSelection(String aInSessionType)
+    public static void sessionExecute(String aInSessionType)
     {
         // Temporary variable to store event name input
         String lTempEvent;
@@ -472,12 +479,12 @@ public class Quibble
      * transaction
      *
      * @param aInTransactionCode
-     * @param aInEvent
+     * @param aInEventName
      * @param aInNumberTickets
      * @return StringBuilder representing the transaction
      */
     public static StringBuilder buildTransaction(String aInTransactionCode,
-                                                 String aInEvent, String
+                                                 String aInEventName, String
                                                          aInEventDate, int
                                                          aInNumberTickets)
     {
@@ -487,9 +494,9 @@ public class Quibble
         aOutTransaction.append(aInTransactionCode + " ");
 
         // Append event name
-        aOutTransaction.append(aInEvent);
+        aOutTransaction.append(aInEventName);
 
-        int lNumSpaces = Constants.MAX_EVENT_NAME_LENGTH - aInEvent
+        int lNumSpaces = Constants.MAX_EVENT_NAME_LENGTH - aInEventName
                 .length();
 
         for (int lCounter = 0; lCounter < lNumSpaces; lCounter++)
