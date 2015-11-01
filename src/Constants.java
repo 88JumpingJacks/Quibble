@@ -29,7 +29,7 @@ public class Constants
     public static final int SALES_MAX_TICKETS = 8;
     public static final int MAX_EVENT_NAME_LENGTH = 20;
     public static final int MAX_EVENT_TICKETS = 99999;
-
+    public static final int MAX_DATE_RANGE_YEARS = 2;
 
     // This error prefix should be used before all error messages
     public static final String ERROR_PREFIX = "Error: ";
@@ -48,17 +48,21 @@ public class Constants
     public static final String ERROR_EMPTY_EVENT_NAME = ERROR_PREFIX +
             "Event name cannot be empty";
     public static final String ERROR_EXCEED_MAX_EVENT_TICKETS = ERROR_PREFIX +
-            "Event cannot have more than " + MAX_EVENT_TICKETS;
+            "Event cannot have more than " + MAX_EVENT_TICKETS + " tickets";
     public static final String ERROR_EVENT_DOES_NOT_EXIST = ERROR_PREFIX +
             "Event does not exist";
-    public static final String ERROR_SELL_MORE_TICKETS_THAN_AVAILABLE =
-            ERROR_PREFIX + "Cannot sell more tickets than are currently " +
-                    "available";
-    public static final String ERROR_NEGATIVE_TICKETS = ERROR_PREFIX +
-            "Cannot have negative number of tickets";
+    public static final String ERROR_EVENT_ALREADY_EXISTS = ERROR_PREFIX +
+            "Event already exists";
+    public static final String ERROR_INSUFFICIENT_TICKETS =
+            ERROR_PREFIX + "Insufficient tickets available";
     public static final String ERROR_INVALID_INPUT = ERROR_PREFIX +
             "Invalid input";
     public static final String ERROR_OUTPUT_FILE_ERROR = ERROR_PREFIX +
             "Output file error";
+    public static final String ERROR_INVALID_DATE_FORMAT = ERROR_PREFIX +
+            "Invalid date. Please enter a valid date in YYMMDD format";
+    public static final String ERROR_EXCEED_DATE_RANGE = ERROR_PREFIX +
+            "Event date is more than " + MAX_DATE_RANGE_YEARS + " years from " +
+            "the current date";
 }
 

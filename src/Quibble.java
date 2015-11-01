@@ -32,7 +32,7 @@ public class Quibble
     /**
      * Output file that is created upon logout
      */
-    private static File outputFile = new File ("../eventTransactions");
+    private static File outputFile;
 
     /**
      * Start Quibble session
@@ -44,15 +44,16 @@ public class Quibble
      * sessionExecute()
      *
      * @param args Current events file path
+     *             args[0] is the current events file (input file) path
+     *             args[1] is the event transactions file (output file) path
      */
     public static void main(String[] args)
     {
-        System.out.println("Welcome to Quibble!");
-
         // Process current events file in main() because it's only done once
         try
         {
             File lCurrentEventsFile = new File(args[0]);
+            outputFile = new File(args[1]);
 
             // Read events and dates from current events file
             // Assume that it is provided (no error checking for this release)
@@ -91,11 +92,19 @@ public class Quibble
         {
             // Show error and terminate program if the file is not well formed
             System.out.println(Constants.ERROR_READ_FILE);
+            e.printStackTrace(); // todo remove
             System.exit(1);
         }
 
-        login();
-        sessionExecute(sessionSelection());
+        // User cannot end a Quibble instance unless there is an error
+        // They can only log out of their session and this will bring them
+        // back to the initial login state again
+        while (true)
+        {
+            login();
+            sessionExecute(sessionSelection());
+        }
+
     }
 
     /**
@@ -108,16 +117,26 @@ public class Quibble
 
         while (!lIsLogin)
         {
-            // Handle login command
-            lIn = sessionScanner.nextLine();
+            try
+            {
+                // Handle login command
+                lIn = sessionScanner.nextLine();
 
-            if (lIn.equals(Constants.LOGIN))
-            {
-                lIsLogin = true;
+                if (lIn.equals(Constants.LOGIN))
+                {
+                    lIsLogin = true;
+                }
+                else
+                {
+                    System.out.println(Constants.ERROR_INVALID_OPTION);
+                }
             }
-            else
+            // This will happen when an automated test reaches the test input
+            // file's EOF
+            // Just exit the Quibble program
+            catch (NoSuchElementException e)
             {
-                System.out.println(Constants.ERROR_INVALID_OPTION);
+                System.exit(1);
             }
         }
     }
@@ -152,10 +171,12 @@ public class Quibble
     }
 
     /**
-     * Logout and end session
+     * Logout and end session, return user to Quibble login
      * Write the session's transactions to the output file
+     *
+     * @return true if successful logout
      */
-    public static void logout()
+    public static boolean logout()
     {
         FileWriter lFW;
 
@@ -176,6 +197,9 @@ public class Quibble
 
             lFW.close();
 
+            // todo might need to create directories if users specifies path
+            // todo with new directories
+            // todo to create output file
             outputFile.createNewFile();
         }
         catch (IOException e)
@@ -184,7 +208,7 @@ public class Quibble
             System.exit(1);
         }
 
-        System.exit(0);
+        return true;
     }
 
     /**
@@ -275,198 +299,214 @@ public class Quibble
         // Continue to allow user to enter commands until they logout
         while (!lIsLogout)
         {
-            lCommandIn = ""; // Reassign lCommandIn to empty String in case
-            // previous loop value is still stored
-            lCommandIn = sessionScanner.nextLine();
-
-            switch (lCommandIn)
+            try
             {
-                case Constants.SELL:
-                    System.out.println(Constants.PROMPT_EVENT_NAME);
-                    lTempEvent = sessionScanner.nextLine();
-                    if (!eventsMap.containsKey(lTempEvent))
-                    {
-                        System.out.println(Constants
-                                .ERROR_EVENT_DOES_NOT_EXIST);
-                        break;
-                    }
+                lCommandIn = ""; // Reassign lCommandIn to empty String in case
+                // previous loop value is still stored
+                lCommandIn = sessionScanner.nextLine();
 
-                    System.out.println(Constants.PROMPT_NUMBER_TICKETS);
-                    lTempNumberTickets = Integer.parseInt(sessionScanner
-                            .nextLine());
-                    if (lTempNumberTickets > eventsMap.get(lTempEvent))
-                    {
-                        System.out.println(Constants
-                                .ERROR_SELL_MORE_TICKETS_THAN_AVAILABLE);
-                    }
-                    else if (aInSessionType.equals(Constants.SALES) &&
-                            lTempNumberTickets > Constants.SALES_MAX_TICKETS)
-                    {
-                        System.out.println(Constants
-                                .ERROR_SALES_EXCEED_MAX_TICKETS);
-                        break;
-                    }
-
-                    sell(lTempEvent, lTempNumberTickets);
-                    dailyEventTransactions.add(buildTransaction("01",
-                            lTempEvent, "000000", lTempNumberTickets));
-                    break;
-
-                case Constants.RETURN:
-                    System.out.println(Constants.PROMPT_EVENT_NAME);
-                    lTempEvent = sessionScanner.nextLine();
-                    if (!eventsMap.containsKey(lTempEvent))
-                    {
-                        System.out.println(Constants
-                                .ERROR_EVENT_DOES_NOT_EXIST);
-                        break;
-                    }
-
-                    System.out.println(Constants.PROMPT_NUMBER_TICKETS);
-                    lTempNumberTickets = Integer.parseInt(sessionScanner
-                            .nextLine());
-                    if (!eventsMap.containsKey(lTempEvent))
-                    {
-                        System.out.println(Constants
-                                .ERROR_EVENT_DOES_NOT_EXIST);
-                        break;
-                    }
-                    else if (lTempNumberTickets > eventsMap.get(lTempEvent))
-                    {
-                        System.out.println(Constants
-                                .ERROR_SELL_MORE_TICKETS_THAN_AVAILABLE);
-                        break;
-                    }
-                    else if (aInSessionType.equals(Constants.SALES) &&
-                            lTempNumberTickets > Constants.SALES_MAX_TICKETS)
-                    {
-                        System.out.println(Constants
-                                .ERROR_SALES_EXCEED_MAX_TICKETS);
-                        break;
-                    }
-
-                    returnTickets(lTempEvent, lTempNumberTickets);
-                    dailyEventTransactions.add(buildTransaction("02",
-                            lTempEvent, "000000", lTempNumberTickets));
-                    break;
-
-                case Constants.CREATE:
-                    if (!aInSessionType.equals(Constants.ADMIN))
-                    {
-                        System.out.println(Constants.ERROR_INVALID_OPTION);
-                        break;
-                    }
-
-                    System.out.println(Constants.PROMPT_EVENT_NAME);
-                    lTempEvent = sessionScanner.nextLine();
-                    if (lTempEvent.length() > Constants.MAX_EVENT_NAME_LENGTH)
-                    {
-                        System.out.println(Constants
-                                .ERROR_EXCEED_MAX_EVENT_NAME_LENGTH);
-                        break;
-                    }
-                    else if (lTempEvent.isEmpty())
-                    {
-                        System.out.println(Constants.ERROR_EMPTY_EVENT_NAME);
-                        break;
-                    }
-
-                    System.out.println(Constants.PROMPT_DATE);
-                    lTempDate = sessionScanner.nextLine();
-
-                    System.out.println(Constants.PROMPT_NUMBER_TICKETS);
-
-                    // Take nextLine() instead of nextInt() in case user doesn't
-                    // input a number, the input will still be accepted and
-                    // the appropriate error message will show
-                    try
-                    {
-                        lTempNumberTickets = Integer.parseInt(sessionScanner
-                                .nextLine());
-                        if (lTempNumberTickets < 0)
+                switch (lCommandIn)
+                {
+                    case Constants.SELL:
+                        System.out.println(Constants.PROMPT_EVENT_NAME);
+                        lTempEvent = sessionScanner.nextLine();
+                        if (!eventsMap.containsKey(lTempEvent))
                         {
                             System.out.println(Constants
-                                    .ERROR_NEGATIVE_TICKETS);
+                                    .ERROR_EVENT_DOES_NOT_EXIST);
                             break;
                         }
-                        else if (lTempNumberTickets > Constants
-                                .MAX_EVENT_TICKETS)
+
+                        System.out.println(Constants.PROMPT_NUMBER_TICKETS);
+                        lTempNumberTickets = Integer.parseInt(sessionScanner
+                                .nextLine());
+                        if (lTempNumberTickets > eventsMap.get(lTempEvent))
+                        {
+                            System.out.println(Constants
+                                    .ERROR_INSUFFICIENT_TICKETS);
+                        }
+                        else if (aInSessionType.equals(Constants.SALES) &&
+                                lTempNumberTickets > Constants
+                                        .SALES_MAX_TICKETS)
+                        {
+                            System.out.println(Constants
+                                    .ERROR_SALES_EXCEED_MAX_TICKETS);
+                            break;
+                        }
+
+                        sell(lTempEvent, lTempNumberTickets);
+                        dailyEventTransactions.add(buildTransaction("01",
+                                lTempEvent, "000000", lTempNumberTickets));
+                        break;
+
+                    case Constants.RETURN:
+                        System.out.println(Constants.PROMPT_EVENT_NAME);
+                        lTempEvent = sessionScanner.nextLine();
+                        if (!eventsMap.containsKey(lTempEvent))
+                        {
+                            System.out.println(Constants
+                                    .ERROR_EVENT_DOES_NOT_EXIST);
+                            break;
+                        }
+
+                        System.out.println(Constants.PROMPT_NUMBER_TICKETS);
+                        lTempNumberTickets = Integer.parseInt(sessionScanner
+                                .nextLine());
+                        if (!eventsMap.containsKey(lTempEvent))
+                        {
+                            System.out.println(Constants
+                                    .ERROR_EVENT_DOES_NOT_EXIST);
+                            break;
+                        }
+                        else if (lTempNumberTickets > eventsMap.get(lTempEvent))
+                        {
+                            System.out.println(Constants
+                                    .ERROR_INSUFFICIENT_TICKETS);
+                            break;
+                        }
+                        else if (aInSessionType.equals(Constants.SALES) &&
+                                lTempNumberTickets > Constants
+                                        .SALES_MAX_TICKETS)
+                        {
+                            System.out.println(Constants
+                                    .ERROR_SALES_EXCEED_MAX_TICKETS);
+                            break;
+                        }
+
+                        returnTickets(lTempEvent, lTempNumberTickets);
+                        dailyEventTransactions.add(buildTransaction("02",
+                                lTempEvent, "000000", lTempNumberTickets));
+                        break;
+
+                    case Constants.CREATE:
+                        if (!aInSessionType.equals(Constants.ADMIN))
+                        {
+                            System.out.println(Constants.ERROR_INVALID_OPTION);
+                            break;
+                        }
+
+                        System.out.println(Constants.PROMPT_EVENT_NAME);
+                        lTempEvent = sessionScanner.nextLine();
+                        if (lTempEvent.length() > Constants
+                                .MAX_EVENT_NAME_LENGTH)
+                        {
+                            System.out.println(Constants
+                                    .ERROR_EXCEED_MAX_EVENT_NAME_LENGTH);
+                            break;
+                        }
+                        else if (lTempEvent.isEmpty())
+                        {
+                            System.out.println(Constants
+                                    .ERROR_EMPTY_EVENT_NAME);
+                            break;
+                        }
+
+                        System.out.println(Constants.PROMPT_DATE);
+                        lTempDate = sessionScanner.nextLine();
+
+                        System.out.println(Constants.PROMPT_NUMBER_TICKETS);
+
+                        // Take nextLine() instead of nextInt() in case user
+                        // doesn't
+                        // input a number, the input will still be accepted and
+                        // the appropriate error message will show
+                        try
+                        {
+                            lTempNumberTickets = Integer.parseInt(sessionScanner
+                                    .nextLine());
+                            if (lTempNumberTickets < 0)
+                            {
+                                System.out.println(Constants
+                                        .ERROR_INVALID_INPUT);
+                                break;
+                            }
+                            else if (lTempNumberTickets > Constants
+                                    .MAX_EVENT_TICKETS)
+                            {
+                                System.out.println(Constants
+                                        .ERROR_EXCEED_MAX_EVENT_TICKETS);
+                                break;
+                            }
+                        }
+                        catch (NumberFormatException e)
+                        {
+                            System.out.println(Constants.ERROR_INVALID_INPUT);
+                            break;
+                        }
+
+                        create(lTempEvent, lTempDate,
+                                lTempNumberTickets);
+                        dailyEventTransactions.add(buildTransaction("03",
+                                lTempEvent, lTempDate, lTempNumberTickets));
+                        break;
+
+                    case Constants.ADD:
+                        if (!aInSessionType.equals(Constants.ADMIN))
+                        {
+                            System.out.println(Constants.ERROR_INVALID_OPTION);
+                            break;
+                        }
+
+                        System.out.println(Constants.PROMPT_EVENT_NAME);
+                        lTempEvent = sessionScanner.nextLine();
+                        if (!eventsMap.containsKey(lTempEvent))
+                        {
+                            System.out.println(Constants
+                                    .ERROR_EVENT_DOES_NOT_EXIST);
+                            break;
+                        }
+
+                        System.out.println(Constants.PROMPT_NUMBER_TICKETS);
+                        lTempNumberTickets = Integer.parseInt(sessionScanner
+                                .nextLine());
+                        if (lTempNumberTickets > Constants.MAX_EVENT_TICKETS)
                         {
                             System.out.println(Constants
                                     .ERROR_EXCEED_MAX_EVENT_TICKETS);
                             break;
                         }
-                    }
-                    catch (NumberFormatException e)
-                    {
-                        System.out.println(Constants.ERROR_INVALID_INPUT);
+
+                        add(lTempEvent, lTempNumberTickets);
+                        dailyEventTransactions.add(buildTransaction("04",
+                                lTempEvent, "000000", lTempNumberTickets));
                         break;
-                    }
 
-                    create(lTempEvent, lTempDate,
-                            lTempNumberTickets);
-                    dailyEventTransactions.add(buildTransaction("03",
-                            lTempEvent, lTempDate, lTempNumberTickets));
-                    break;
+                    case Constants.DELETE:
+                        if (!aInSessionType.equals(Constants.ADMIN))
+                        {
+                            System.out.println(Constants.ERROR_INVALID_OPTION);
+                            break;
+                        }
 
-                case Constants.ADD:
-                    if (!aInSessionType.equals(Constants.ADMIN))
-                    {
+                        System.out.println(Constants.PROMPT_EVENT_NAME);
+                        lTempEvent = sessionScanner.nextLine();
+                        if (!eventsMap.containsKey(lTempEvent))
+                        {
+                            System.out.println(Constants
+                                    .ERROR_EVENT_DOES_NOT_EXIST);
+                            break;
+                        }
+
+                        delete(lTempEvent);
+                        dailyEventTransactions.add(buildTransaction("05",
+                                lTempEvent, "000000", 0));
+                        break;
+
+                    case Constants.LOGOUT:
+                        lIsLogout = logout();
+                        break;
+
+                    default:
                         System.out.println(Constants.ERROR_INVALID_OPTION);
                         break;
-                    }
-
-                    System.out.println(Constants.PROMPT_EVENT_NAME);
-                    lTempEvent = sessionScanner.nextLine();
-                    if (!eventsMap.containsKey(lTempEvent))
-                    {
-                        System.out.println(Constants
-                                .ERROR_EVENT_DOES_NOT_EXIST);
-                        break;
-                    }
-
-                    System.out.println(Constants.PROMPT_NUMBER_TICKETS);
-                    lTempNumberTickets = Integer.parseInt(sessionScanner
-                            .nextLine());
-                    if (lTempNumberTickets > Constants.MAX_EVENT_TICKETS)
-                    {
-                        System.out.println(Constants
-                                .ERROR_EXCEED_MAX_EVENT_TICKETS);
-                        break;
-                    }
-
-                    add(lTempEvent, lTempNumberTickets);
-                    dailyEventTransactions.add(buildTransaction("04",
-                            lTempEvent, "000000", lTempNumberTickets));
-                    break;
-
-                case Constants.DELETE:
-                    if (!aInSessionType.equals(Constants.ADMIN))
-                    {
-                        System.out.println(Constants.ERROR_INVALID_OPTION);
-                        break;
-                    }
-
-                    System.out.println(Constants.PROMPT_EVENT_NAME);
-                    lTempEvent = sessionScanner.nextLine();
-                    if (!eventsMap.containsKey(lTempEvent))
-                    {
-                        System.out.println(Constants
-                                .ERROR_EVENT_DOES_NOT_EXIST);
-                        break;
-                    }
-
-                    delete(lTempEvent);
-                    dailyEventTransactions.add(buildTransaction("05",
-                            lTempEvent, "000000", 0));
-                    break;
-
-                case Constants.LOGOUT:
-                    logout();
-
-                default:
-                    System.out.println(Constants.ERROR_INVALID_OPTION);
-                    break;
+                }
+            }
+            // This will happen when an automated test reaches the test input
+            // file's EOF
+            // Just exit the Quibble program
+            catch (NoSuchElementException e)
+            {
+                System.exit(1);
             }
 
             // Clear the StringBuilder
