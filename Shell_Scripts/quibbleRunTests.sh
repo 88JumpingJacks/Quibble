@@ -1,4 +1,3 @@
-# The user needs to run this file from the Quibble Java src folder
 #!/bin/bash
 cd ../src
 javac Quibble.java Constants.java
