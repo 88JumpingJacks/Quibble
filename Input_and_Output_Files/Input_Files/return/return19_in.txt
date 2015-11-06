@@ -1,6 +1,6 @@
 login
 admin
 return
-Justin Bieber
+b
 5
 logout

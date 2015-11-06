@@ -1,4 +1,6 @@
 import java.io.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -35,6 +37,11 @@ public class Quibble
     private static File outputFile_daily_Event_Transactions;
 
     /**
+     * Map for reference to store months and the number of days they have
+     */
+    private static Map<Integer, Integer> monthsAndNumberDays = new HashMap<>();
+
+    /**
      * Start Quibble session
      * <p>
      * Accepts current events file path as parameter, processes event and
@@ -49,6 +56,20 @@ public class Quibble
      */
     public static void main(String[] args)
     {
+        // Populate monthsAndNumberDays Map
+        monthsAndNumberDays.put(1, 31);
+        monthsAndNumberDays.put(2, 28);
+        monthsAndNumberDays.put(3, 31);
+        monthsAndNumberDays.put(4, 30);
+        monthsAndNumberDays.put(5, 31);
+        monthsAndNumberDays.put(6, 30);
+        monthsAndNumberDays.put(7, 31);
+        monthsAndNumberDays.put(8, 31);
+        monthsAndNumberDays.put(9, 30);
+        monthsAndNumberDays.put(10, 31);
+        monthsAndNumberDays.put(11, 30);
+        monthsAndNumberDays.put(12, 31);
+
         // Process current events file in main() because it's only done once
         try
         {
@@ -309,6 +330,7 @@ public class Quibble
                     case Constants.SELL:
                         System.out.println(Constants.PROMPT_EVENT_NAME);
                         lTempEvent = sessionScanner.nextLine();
+
                         if (!eventsMap.containsKey(lTempEvent))
                         {
                             System.out.println(Constants
@@ -317,19 +339,43 @@ public class Quibble
                         }
 
                         System.out.println(Constants.PROMPT_NUMBER_TICKETS);
-                        lTempNumberTickets = Integer.parseInt(sessionScanner
-                                .nextLine());
-                        if (lTempNumberTickets > eventsMap.get(lTempEvent))
+                        try
                         {
-                            System.out.println(Constants
-                                    .ERROR_INSUFFICIENT_TICKETS);
+                            lTempNumberTickets = Integer.parseInt(sessionScanner
+                                    .nextLine());
+                            if (lTempNumberTickets < 0)
+                            {
+                                System.out.println(Constants
+                                        .ERROR_INVALID_INPUT);
+                                break;
+                            }
+                            else if (lTempNumberTickets > Constants
+                                    .MAX_EVENT_TICKETS)
+                            {
+                                System.out.println(Constants
+                                        .ERROR_EXCEED_MAX_EVENT_TICKETS);
+                                break;
+                            }
+                            else if (lTempNumberTickets > eventsMap.get
+                                    (lTempEvent))
+                            {
+                                System.out.println(Constants
+                                        .ERROR_INSUFFICIENT_TICKETS);
+                                break;
+                            }
+                            else if (aInSessionType.equals(Constants.SALES) &&
+                                    lTempNumberTickets > Constants
+                                            .SALES_MAX_TICKETS)
+                            {
+                                System.out.println(Constants
+                                        .ERROR_SALES_EXCEED_MAX_TICKETS);
+                                break;
+                            }
+
                         }
-                        else if (aInSessionType.equals(Constants.SALES) &&
-                                lTempNumberTickets > Constants
-                                        .SALES_MAX_TICKETS)
+                        catch (NumberFormatException e)
                         {
-                            System.out.println(Constants
-                                    .ERROR_SALES_EXCEED_MAX_TICKETS);
+                            System.out.println(Constants.ERROR_INVALID_INPUT);
                             break;
                         }
 
@@ -349,26 +395,48 @@ public class Quibble
                         }
 
                         System.out.println(Constants.PROMPT_NUMBER_TICKETS);
-                        lTempNumberTickets = Integer.parseInt(sessionScanner
-                                .nextLine());
-                        if (!eventsMap.containsKey(lTempEvent))
+                        try
                         {
-                            System.out.println(Constants
-                                    .ERROR_EVENT_DOES_NOT_EXIST);
-                            break;
+                            lTempNumberTickets = Integer.parseInt(sessionScanner
+                                    .nextLine());
+                            if (lTempNumberTickets < 0)
+                            {
+                                System.out.println(Constants
+                                        .ERROR_INVALID_INPUT);
+                                break;
+                            }
+                            else if (lTempNumberTickets > Constants
+                                    .MAX_EVENT_TICKETS)
+                            {
+                                System.out.println(Constants
+                                        .ERROR_EXCEED_MAX_EVENT_TICKETS);
+                                break;
+                            }
+                            else if (!eventsMap.containsKey(lTempEvent))
+                            {
+                                System.out.println(Constants
+                                        .ERROR_EVENT_DOES_NOT_EXIST);
+                                break;
+                            }
+
+                            if (lTempNumberTickets > eventsMap.get(lTempEvent))
+                            {
+                                System.out.println(Constants
+                                        .ERROR_INSUFFICIENT_TICKETS);
+                                break;
+                            }
+                            else if (aInSessionType.equals(Constants.SALES) &&
+                                    lTempNumberTickets > Constants
+                                            .SALES_MAX_TICKETS)
+                            {
+                                System.out.println(Constants
+                                        .ERROR_SALES_EXCEED_MAX_TICKETS);
+                                break;
+                            }
                         }
-                        else if (lTempNumberTickets > eventsMap.get(lTempEvent))
+                        catch (NumberFormatException e)
                         {
-                            System.out.println(Constants
-                                    .ERROR_INSUFFICIENT_TICKETS);
-                            break;
-                        }
-                        else if (aInSessionType.equals(Constants.SALES) &&
-                                lTempNumberTickets > Constants
-                                        .SALES_MAX_TICKETS)
-                        {
-                            System.out.println(Constants
-                                    .ERROR_SALES_EXCEED_MAX_TICKETS);
+                            System.out.println(Constants.ERROR_INVALID_INPUT);
                             break;
                         }
 
@@ -402,13 +470,70 @@ public class Quibble
 
                         System.out.println(Constants.PROMPT_DATE);
                         lTempDate = sessionScanner.nextLine();
+                        try
+                        {
+                            // ***Check that date is in format YYMMDD
+                            // Check that entered date is of length 6
+                            if (lTempDate.length() != 6)
+                            {
+                                throw new NumberFormatException();
+                            }
+
+                            // Check that all indexes of the input are int
+                            int lYear = Integer.parseInt(lTempDate.substring
+                                    (0, 2));
+                            int lMonth = Integer.parseInt(lTempDate.substring
+                                    (2, 4));
+                            int lDay = Integer.parseInt(lTempDate.substring
+                                    (4, 6));
+
+                            // Check that month is valid
+                            // i.e. The user cannot specify 32 days because
+                            // no month has 32 days
+                            if (!monthsAndNumberDays.containsKey(lMonth))
+                            {
+                                throw new NumberFormatException();
+                            }
+
+                            // Check that date does not exceed the maximum
+                            // number of days for the given month
+                            if (lDay > monthsAndNumberDays.get(lMonth) ||
+                                    lDay < 1)
+                            {
+                                throw new NumberFormatException();
+                            }
+
+                            // Check that event date is within 2 years from
+                            // current date
+                            LocalDate lToday = LocalDate.now();
+                            LocalDate lEventDate = LocalDate.of(2000 + lYear,
+                                    lMonth, lDay);
+                            if (lEventDate.isBefore(lToday))
+                            {
+                                throw new Exception();
+                            }
+                            else if (lEventDate.isAfter(lToday.plusYears(2)))
+                            {
+                                throw new Exception();
+                            }
+                        }
+                        catch (NumberFormatException e)
+                        {
+                            System.out.println(Constants
+                                    .ERROR_INVALID_DATE_FORMAT);
+                            break;
+                        }
+                        catch (Exception e)
+                        {
+                            System.out.println(Constants
+                                    .ERROR_EXCEED_DATE_RANGE);
+                            break;
+                        }
 
                         System.out.println(Constants.PROMPT_NUMBER_TICKETS);
-
                         // Take nextLine() instead of nextInt() in case user
-                        // doesn't
-                        // input a number, the input will still be accepted and
-                        // the appropriate error message will show
+                        // doesn't input a number, the input will still be
+                        // accepted and the appropriate error message will show
                         try
                         {
                             lTempNumberTickets = Integer.parseInt(sessionScanner
@@ -456,12 +581,34 @@ public class Quibble
                         }
 
                         System.out.println(Constants.PROMPT_NUMBER_TICKETS);
-                        lTempNumberTickets = Integer.parseInt(sessionScanner
-                                .nextLine());
-                        if (lTempNumberTickets > Constants.MAX_EVENT_TICKETS)
+                        try
                         {
-                            System.out.println(Constants
-                                    .ERROR_EXCEED_MAX_EVENT_TICKETS);
+                            lTempNumberTickets = Integer.parseInt(sessionScanner
+                                    .nextLine());
+                            if (lTempNumberTickets < 0)
+                            {
+                                System.out.println(Constants
+                                        .ERROR_INVALID_INPUT);
+                                break;
+                            }
+                            else if (lTempNumberTickets > Constants
+                                    .MAX_EVENT_TICKETS)
+                            {
+                                System.out.println(Constants
+                                        .ERROR_EXCEED_MAX_EVENT_TICKETS);
+                                break;
+                            }
+                            else if (lTempNumberTickets + eventsMap.get
+                                    (lTempEvent) > Constants.MAX_EVENT_TICKETS)
+                            {
+                                System.out.println(Constants
+                                        .ERROR_EXCEED_MAX_EVENT_TICKETS);
+                                break;
+                            }
+                        }
+                        catch (NumberFormatException e)
+                        {
+                            System.out.println(Constants.ERROR_INVALID_INPUT);
                             break;
                         }
 

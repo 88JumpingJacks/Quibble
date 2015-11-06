@@ -1,6 +1,6 @@
 login
 sales
 sell
-Justin Bieber
+b
 5
 logout

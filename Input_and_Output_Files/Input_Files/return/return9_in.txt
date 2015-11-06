@@ -1,6 +1,6 @@
 login
 sales
 return
-Justin Bieber
+b
 5
 logout

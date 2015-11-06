@@ -1,6 +1,6 @@
 login
 admin
 create
-Justin Bieber
 a
+z
 logout

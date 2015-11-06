@@ -1,3 +1,4 @@
 Enter the type of session: 
 Enter event name: 
 Enter number of tickets: 
+Error: Event cannot have more than 99999 tickets

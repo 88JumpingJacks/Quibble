@@ -1,9 +1,9 @@
 login
 admin
 add
-Justin Bieber
+a
 10
 return
-Justin Bieber
+a
 1
 logout
