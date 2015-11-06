@@ -26,13 +26,13 @@ public class Quibble
      * Stores transactions from current session that will be written to the
      * output file upon session termination
      */
-    private static List<StringBuilder> dailyEventTransactions = new
+    private static List<StringBuilder> dailyEventTransactionsList = new
             ArrayList<>();
 
     /**
-     * Output file that is created upon logout
+     * Output file that is created upon logout of the transactions that
      */
-    private static File outputFile;
+    private static File outputFile_daily_Event_Transactions;
 
     /**
      * Start Quibble session
@@ -53,7 +53,7 @@ public class Quibble
         try
         {
             File lCurrentEventsFile = new File(args[0]);
-            outputFile = new File(args[1]);
+            outputFile_daily_Event_Transactions = new File(args[1]);
 
             // Read events and dates from current events file
             // Assume that it is provided (no error checking for this release)
@@ -172,7 +172,8 @@ public class Quibble
 
     /**
      * Logout and end session, return user to Quibble login
-     * Write the session's transactions to the output file
+     * Write the session's transactions to the daily event transactions
+     * output file
      *
      * @return true if successful logout
      */
@@ -182,25 +183,23 @@ public class Quibble
 
         try
         {
-            lFW = new FileWriter(outputFile, true);
+            lFW = new FileWriter(outputFile_daily_Event_Transactions);
 
-            for (int lCounter = 0; lCounter < dailyEventTransactions.size();
+            for (int lCounter = 0; lCounter < dailyEventTransactionsList.size();
                  lCounter++)
             {
-                lFW.write(dailyEventTransactions.get(lCounter).toString());
+                lFW.write(dailyEventTransactionsList.get(lCounter).toString());
                 lFW.write(String.format("%n"));
             }
 
             // Write logout transaction
             lFW.write("00                       000000 00000");
-            lFW.write(String.format("%n"));
 
             lFW.close();
 
             // todo might need to create directories if users specifies path
-            // todo with new directories
-            // todo to create output file
-            outputFile.createNewFile();
+            // todo with new directories to create output file
+            outputFile_daily_Event_Transactions.createNewFile();
         }
         catch (IOException e)
         {
@@ -288,7 +287,7 @@ public class Quibble
         int lTempNumberTickets;
 
         // Stores individual transactions to be added to
-        // dailyEventTransactions List
+        // dailyEventTransactionsList List
         StringBuilder lTransaction = new StringBuilder();
 
         // Command line input
@@ -335,7 +334,7 @@ public class Quibble
                         }
 
                         sell(lTempEvent, lTempNumberTickets);
-                        dailyEventTransactions.add(buildTransaction("01",
+                        dailyEventTransactionsList.add(buildTransaction("01",
                                 lTempEvent, "000000", lTempNumberTickets));
                         break;
 
@@ -374,7 +373,7 @@ public class Quibble
                         }
 
                         returnTickets(lTempEvent, lTempNumberTickets);
-                        dailyEventTransactions.add(buildTransaction("02",
+                        dailyEventTransactionsList.add(buildTransaction("02",
                                 lTempEvent, "000000", lTempNumberTickets));
                         break;
 
@@ -436,7 +435,7 @@ public class Quibble
 
                         create(lTempEvent, lTempDate,
                                 lTempNumberTickets);
-                        dailyEventTransactions.add(buildTransaction("03",
+                        dailyEventTransactionsList.add(buildTransaction("03",
                                 lTempEvent, lTempDate, lTempNumberTickets));
                         break;
 
@@ -467,7 +466,7 @@ public class Quibble
                         }
 
                         add(lTempEvent, lTempNumberTickets);
-                        dailyEventTransactions.add(buildTransaction("04",
+                        dailyEventTransactionsList.add(buildTransaction("04",
                                 lTempEvent, "000000", lTempNumberTickets));
                         break;
 
@@ -488,7 +487,7 @@ public class Quibble
                         }
 
                         delete(lTempEvent);
-                        dailyEventTransactions.add(buildTransaction("05",
+                        dailyEventTransactionsList.add(buildTransaction("05",
                                 lTempEvent, "000000", 0));
                         break;
 
