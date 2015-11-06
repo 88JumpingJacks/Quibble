@@ -1,0 +1,6 @@
+login
+sales
+sell
+Justin Bieber
+6.5
+logout

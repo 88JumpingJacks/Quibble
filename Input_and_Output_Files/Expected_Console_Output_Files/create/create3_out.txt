@@ -1,0 +1,4 @@
+Enter the type of session: 
+Enter event name: 
+Enter event date: 
+Error: Invalid date. Please enter a valid date in YYMMDD format

@@ -1,0 +1,6 @@
+login
+admin
+create
+Justin Bieber
+23998123214141248
+logout

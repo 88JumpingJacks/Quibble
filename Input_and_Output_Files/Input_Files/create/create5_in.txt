@@ -1,0 +1,5 @@
+login
+admin
+create
+Justin Bieber sucks I hate him
+logout

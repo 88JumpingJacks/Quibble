@@ -1,0 +1,7 @@
+login
+admin
+create
+testEvent
+161231
+1000
+logout

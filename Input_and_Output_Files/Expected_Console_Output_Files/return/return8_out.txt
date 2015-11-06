@@ -1,0 +1,4 @@
+Enter the type of session: 
+Enter event name: 
+Enter number of tickets: 
+Error: Cannot return more than 8 tickets in one transaction

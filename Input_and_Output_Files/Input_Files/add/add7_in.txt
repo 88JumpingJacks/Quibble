@@ -1,0 +1,6 @@
+login
+admin
+add
+Justin Bieber
+99990
+logout

@@ -1,0 +1,6 @@
+login
+admin
+sell
+Justin Bieber
+six
+logout

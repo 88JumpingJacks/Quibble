@@ -1,0 +1,2 @@
+Enter event name: 
+Error: Event name cannot exceed 20 characters

@@ -1,0 +1,6 @@
+login
+admin
+return
+Justin Bieber
+6
+logout

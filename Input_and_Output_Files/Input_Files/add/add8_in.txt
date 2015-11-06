@@ -1,0 +1,6 @@
+login
+admin
+add
+Justin Bieber
+3000
+logout

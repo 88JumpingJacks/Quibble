@@ -1,0 +1,9 @@
+login
+admin
+add
+Justin Bieber
+10
+return
+Justin Bieber
+1
+logout

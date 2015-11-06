@@ -1,0 +1,3 @@
+Enter the type of session: 
+Error: Invalid option
+Enter the type of session: 

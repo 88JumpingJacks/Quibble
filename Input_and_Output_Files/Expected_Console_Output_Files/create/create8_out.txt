@@ -1,0 +1,4 @@
+Enter the type of session: 
+Enter event name: 
+Enter event date: 
+Error: Event date is more than 2 years from the current date

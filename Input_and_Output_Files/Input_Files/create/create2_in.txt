@@ -1,0 +1,5 @@
+login
+admin
+create
+invalid_event_name_to_end_create
+logout

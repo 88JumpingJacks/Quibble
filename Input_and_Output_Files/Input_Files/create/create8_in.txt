@@ -1,0 +1,6 @@
+login
+admin
+create
+Justin Bieber
+991121
+logout

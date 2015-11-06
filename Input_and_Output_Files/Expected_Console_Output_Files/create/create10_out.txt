@@ -1,0 +1,5 @@
+Enter the type of session: 
+Enter event name: 
+Enter event date: 
+Enter number of tickets: 
+Error: Event already exists

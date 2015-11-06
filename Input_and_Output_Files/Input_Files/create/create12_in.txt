@@ -1,0 +1,9 @@
+login
+sales
+create
+Justin Bieber
+161031
+9000
+sell 
+Justin Bieber
+logout

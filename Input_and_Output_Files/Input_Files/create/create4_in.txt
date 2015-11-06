@@ -1,0 +1,7 @@
+login
+admin
+create
+Justin Bieber
+161031
+a
+logout
