@@ -44,15 +44,8 @@ public class Quibble
     /**
      * Start Quibble session
      * <p>
-     * Accepts current events file path as parameter, processes event and
-     * number of tickets info, stores this in eventsMap HashMap so the info
-     * is easily accessible during session execution. Start Quibble session,
-     * process current events file. Calls login(), sessionSelection() and
+     * Start Quibble session,process current events file. Calls login() and
      * sessionExecute()
-     *
-     * @param args Current events file path
-     *             args[0] is the current events file (input file) path
-     *             args[1] is the event transactions file (output file) path
      */
     public static void main(String[] args)
     {
@@ -70,53 +63,6 @@ public class Quibble
         monthsAndNumberDays.put(11, 30);
         monthsAndNumberDays.put(12, 31);
 
-        // Process current events file in main() because it's only done once
-        try
-        {
-            File lCurrentEventsFile = new File(args[0]);
-            outputFile_daily_Event_Transactions = new File(args[1]);
-
-            // Read events and dates from current events file
-            // Assume that it is provided (no error checking for this release)
-            FileReader lFileReader = new FileReader(lCurrentEventsFile);
-            BufferedReader lBufferedReader = new BufferedReader(lFileReader);
-
-            String lCurrentLine;
-            String lEventName;
-            String lNumberTickets;
-
-            while ((lCurrentLine = lBufferedReader.readLine()) != null)
-            {
-                if (lCurrentLine.equals("END                  00000"))
-                {
-                    break;
-                }
-
-                // The file's format for each line is AAAAAAAAAAAAAAAAAAAA_NNNNN
-                // where "AAAAAAAAAAAAAAAAAAAA" is the event name, "_" is a
-                // space and "NNNNN" is the number of tickets available for the
-                // event.
-                // Assign the event name as key and the number of tickets as
-                // value to the currentEventsMap
-                lEventName = lCurrentLine.substring(0, lCurrentLine
-                        .lastIndexOf(" ")).trim();
-                lNumberTickets = lCurrentLine.substring(lCurrentLine.lastIndexOf
-                        (" ") + 1);
-
-                eventsMap.put(lEventName,
-                        Integer.parseInt(lNumberTickets));
-            }
-
-            lFileReader.close();
-        }
-        catch (IOException e)
-        {
-            // Show error and terminate program if the file is not well formed
-            System.out.println(Constants.ERROR_READ_FILE);
-            e.printStackTrace(); // todo remove
-            System.exit(1);
-        }
-
         // User cannot end a Quibble instance unless there is an error
         // They can only log out of their session and this will bring them
         // back to the initial login state again
@@ -129,7 +75,8 @@ public class Quibble
     }
 
     /**
-     * Handle login command
+     * Handle login command.
+     * Read Current Events File, initialize daily event transaction file
      */
     public static void login()
     {
@@ -160,6 +107,58 @@ public class Quibble
                 System.exit(1);
             }
         }
+
+        // Process current events file in main() because it's only done once
+        try
+        {
+            File lCurrentEventsFile = new File("Current_Events_File");
+            outputFile_daily_Event_Transactions = new File
+                    ("Daily_Event_Transaction_File");
+
+            // Read events and dates from current events file
+            // Assume that it is provided (no error checking for this release)
+            FileReader lFileReader = new FileReader(lCurrentEventsFile);
+            BufferedReader lBufferedReader = new BufferedReader(lFileReader);
+
+            String lCurrentLine;
+            String lEventName;
+            String lNumberTickets;
+
+            while ((lCurrentLine = lBufferedReader.readLine()) != null)
+            {
+                if (lCurrentLine.equals("END                  00000"))
+                {
+                    break;
+                }
+
+                // The file's format for each line is AAAAAAAAAAAAAAAAAAAA_NNNNN
+                // where "AAAAAAAAAAAAAAAAAAAA" is the event name, "_" is a
+                // space and "NNNNN" is the number of tickets available for the
+                // event.
+                // Assign the event name as key and the number of tickets as
+                // value to the currentEventsMap
+                lEventName = lCurrentLine.substring(0, lCurrentLine
+                        .lastIndexOf(" ")).trim();
+                lNumberTickets = lCurrentLine.substring(lCurrentLine.lastIndexOf
+                        (" ") + 1);
+
+                eventsMap.put(lEventName,
+                        Integer.parseInt(lNumberTickets));
+
+                // todo REMOVE
+                BackOffice.mergeEventTransactionFiles(new File
+                        ("/Users/jackli/IdeaProjects/Quibble_Assignment4/Input_and_Output_Files/Expected_Event_Transaction_Files/add/add8.trn"));
+            }
+
+            lFileReader.close();
+        }
+        catch (IOException e)
+        {
+            // Show error and terminate program if the file is not well formed
+            System.out.println(Constants.ERROR_READ_FILE);
+            System.exit(1);
+        }
+
     }
 
     /**
