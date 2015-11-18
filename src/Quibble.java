@@ -10,36 +10,54 @@ import java.util.*;
  * Ticket Service software and creates an event transactions file detailing
  * the session's transactions upon logout.
  * Quibble component functionality is also defined here.
+ *
+ * Quibble is a command line based software product and is assumed to be run
+ * from a shell script in the /Shell_Scripts folder of this Java project
  */
 public class Quibble
 {
     /**
+     * Map for reference to store months and the number of days they have
+     */
+    private final static Map<Integer, Integer> monthsAndNumberDays = new
+            HashMap<>();
+    /**
+     * Map of daily event transaction file where
+     * key - transaction name
+     * value - transaction code
+     */
+    public static Map<String, String> transactionCodeMap = new HashMap<>();
+    /**
      * Scanner object to accept command line input
      */
     private static Scanner sessionScanner = new Scanner(System.in);
-
     /**
      * Stores current events and number of tickets read from current events file
      * This map is not changed after being populated the first time
      */
     private static Map<String, Integer> eventsMap = new HashMap<>();
-
     /**
      * Stores transactions from current session that will be written to the
      * output file upon session termination
      */
     private static List<StringBuilder> dailyEventTransactionsList = new
             ArrayList<>();
-
     /**
      * Output file that is created upon logout of the transactions that
      */
     private static File outputFile_daily_Event_Transactions;
 
     /**
-     * Map for reference to store months and the number of days they have
+     * Populate transactionCodeMap with transaction codes
      */
-    private static Map<Integer, Integer> monthsAndNumberDays = new HashMap<>();
+    static
+    {
+        transactionCodeMap.put("sell", "01");
+        transactionCodeMap.put("return", "02");
+        transactionCodeMap.put("create", "03");
+        transactionCodeMap.put("add", "04");
+        transactionCodeMap.put("delete", "05");
+    }
 
     /**
      * Start Quibble session
@@ -62,6 +80,12 @@ public class Quibble
         monthsAndNumberDays.put(10, 31);
         monthsAndNumberDays.put(11, 30);
         monthsAndNumberDays.put(12, 31);
+
+        // todo remove in future iteration, this call shouldn't be front end
+        // todo it's a rapid prototype for now ;-)
+        BackOffice.processTransactions(new File("../Master_Events_File"),
+                new File("../Current_Events_File"),
+                new File("../Merged_Event_Transaction_Files"));
 
         // User cannot end a Quibble instance unless there is an error
         // They can only log out of their session and this will bring them
@@ -111,9 +135,9 @@ public class Quibble
         // Process current events file in main() because it's only done once
         try
         {
-            File lCurrentEventsFile = new File("Current_Events_File");
+            File lCurrentEventsFile = new File("../Current_Events_File");
             outputFile_daily_Event_Transactions = new File
-                    ("Daily_Event_Transaction_File");
+                    ("../Daily_Event_Transaction_File");
 
             // Read events and dates from current events file
             // Assume that it is provided (no error checking for this release)
@@ -144,10 +168,6 @@ public class Quibble
 
                 eventsMap.put(lEventName,
                         Integer.parseInt(lNumberTickets));
-
-                // todo REMOVE
-                BackOffice.mergeEventTransactionFiles(new File
-                        ("/Users/jackli/IdeaProjects/Quibble_Assignment4/Input_and_Output_Files/Expected_Event_Transaction_Files/add/add8.trn"));
             }
 
             lFileReader.close();
@@ -156,6 +176,7 @@ public class Quibble
         {
             // Show error and terminate program if the file is not well formed
             System.out.println(Constants.ERROR_READ_FILE);
+            e.printStackTrace();
             System.exit(1);
         }
 
@@ -379,8 +400,10 @@ public class Quibble
                         }
 
                         sell(lTempEvent, lTempNumberTickets);
-                        dailyEventTransactionsList.add(buildTransaction("01",
-                                lTempEvent, "000000", lTempNumberTickets));
+                        dailyEventTransactionsList.add(buildTransaction
+                                (transactionCodeMap.get("sell"),
+                                        lTempEvent, "000000",
+                                        lTempNumberTickets));
                         break;
 
                     case Constants.RETURN:
@@ -440,8 +463,10 @@ public class Quibble
                         }
 
                         returnTickets(lTempEvent, lTempNumberTickets);
-                        dailyEventTransactionsList.add(buildTransaction("02",
-                                lTempEvent, "000000", lTempNumberTickets));
+                        dailyEventTransactionsList.add(buildTransaction
+                                (transactionCodeMap.get("return"),
+                                        lTempEvent, "000000",
+                                        lTempNumberTickets));
                         break;
 
                     case Constants.CREATE:
@@ -559,8 +584,10 @@ public class Quibble
 
                         create(lTempEvent, lTempDate,
                                 lTempNumberTickets);
-                        dailyEventTransactionsList.add(buildTransaction("03",
-                                lTempEvent, lTempDate, lTempNumberTickets));
+                        dailyEventTransactionsList.add(buildTransaction
+                                (transactionCodeMap.get("create"),
+                                        lTempEvent, lTempDate,
+                                        lTempNumberTickets));
                         break;
 
                     case Constants.ADD:
@@ -612,8 +639,10 @@ public class Quibble
                         }
 
                         add(lTempEvent, lTempNumberTickets);
-                        dailyEventTransactionsList.add(buildTransaction("04",
-                                lTempEvent, "000000", lTempNumberTickets));
+                        dailyEventTransactionsList.add(buildTransaction
+                                (transactionCodeMap.get("add"),
+                                        lTempEvent, "000000",
+                                        lTempNumberTickets));
                         break;
 
                     case Constants.DELETE:
@@ -633,8 +662,9 @@ public class Quibble
                         }
 
                         delete(lTempEvent);
-                        dailyEventTransactionsList.add(buildTransaction("05",
-                                lTempEvent, "000000", 0));
+                        dailyEventTransactionsList.add(buildTransaction
+                                (transactionCodeMap.get("delete"),
+                                        lTempEvent, "000000", 0));
                         break;
 
                     case Constants.LOGOUT:
