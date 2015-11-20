@@ -12,7 +12,9 @@ import java.util.*;
  * Quibble component functionality is also defined here.
  *
  * Quibble is a command line based software product and is assumed to be run
- * from a shell script in the /Shell_Scripts folder of this Java project
+ * from a shell script in the /Shell_Scripts folder of this Java project.
+ * Hence the directory names are not compatible with running the java program
+ * from another folder
  */
 public class Quibble
 {
@@ -95,7 +97,6 @@ public class Quibble
             login();
             sessionExecute(sessionSelection());
         }
-
     }
 
     /**
