@@ -85,9 +85,14 @@ public class Quibble
 
         // todo remove in future iteration, this call shouldn't be front end
         // todo it's a rapid prototype for now ;-)
-        BackOffice.processTransactions(new File("../Master_Events_File"),
-                new File("../Current_Events_File"),
-                new File("../Merged_Event_Transaction_Files"));
+        System.out.println(System.getProperty("user.dir"));
+//        BackOffice.processTransactions(new File("../Master_Events_File"),
+//                new File("../Current_Events_File"),
+//                new File("../Merged_Event_Transaction_Files"));
+        BackOffice.processTransactions(new File("./Master_Events_File"),
+                new File("./Current_Events_File"),
+                new File("./Merged_Event_Transaction_Files"));
+
 
         // User cannot end a Quibble instance unless there is an error
         // They can only log out of their session and this will bring them
@@ -230,17 +235,16 @@ public class Quibble
             for (int lCounter = 0; lCounter < dailyEventTransactionsList.size();
                  lCounter++)
             {
+                System.out.println("transaction" + dailyEventTransactionsList.get(lCounter).toString());
                 lFW.write(dailyEventTransactionsList.get(lCounter).toString());
                 lFW.write(String.format("%n"));
             }
 
             // Write logout transaction
-            lFW.write("00                       000000 00000");
+            lFW.write("00                      000000 00000");
 
             lFW.close();
 
-            // todo might need to create directories if users specifies path
-            // todo with new directories to create output file
             outputFile_daily_Event_Transactions.createNewFile();
         }
         catch (IOException e)
@@ -288,6 +292,7 @@ public class Quibble
             aInNumberTickets)
     {
         // todo cannot implement because there is no backend in this phase
+
     }
 
     /**
@@ -722,7 +727,6 @@ public class Quibble
         aOutTransaction.append(" ");
 
         // Append event date
-        aOutTransaction.append(" ");
         aOutTransaction.append(aInEventDate);
         aOutTransaction.append(" ");
 

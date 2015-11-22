@@ -4,6 +4,8 @@
 # That script is assumed to be run from the Shell_Scripts directory of 
 # the Java Quibble project as noted in quibbleRunTests.sh
 # This script represents the overnight batch processor for the backend.
+
+# Directory where transaction files created by Quibble are located
 DIR=$1
 
 # Back Office files

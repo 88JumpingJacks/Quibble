@@ -36,21 +36,37 @@ public class BackOffice
 
             MasterEventTransactionsInfo lMasterLineInfo;
 
+            System.out.println("ENTERING WHILE");
             // Read master events file line by line, store info in a HashMap
             while ((lLine = lBufferedReader.readLine()) != null)
             {
+                System.out.println("IN WHILE");
+
+                System.out.println("lLine: " + lLine);
                 // Split lLine by white space twice
-                String[] lLineArray = lLine.split("\\s+", 3);
+//                String[] lLineArray = lLine.split("\\s+", 3);
+                String[] lLineArray = new String[3];
+                lLineArray[0] = lLine.substring(0, 6);
+                lLineArray[1] = lLine.substring(7, 12);
+                lLineArray[2] = lLine.substring(13, 33);
+
+                System.out.println("lLineArray length: " + lLineArray.length);
+                for (String yo : lLineArray)
+                {
+                    System.out.println("yo: " + yo);
+                }
 
                 String lDate = lLineArray[0];
                 String lNumTickets = lLineArray[1];
                 String lMasterEventName = lLineArray[2];
+                System.out.println("while event name: " + lMasterEventName);
 
                 lMasterLineInfo = new MasterEventTransactionsInfo(lDate,
                         lNumTickets,
                         lMasterEventName);
 
                 lMasterMap.put(lMasterEventName, lMasterLineInfo);
+                System.out.println("JUST PUT IN MAP: " + lMasterMap.get(lMasterEventName));
             }
 
             lFileReader = new FileReader
@@ -63,13 +79,33 @@ public class BackOffice
                 // Parse the line to get the transaction code (read first two
                 // characters)
                 String lTransactionCode = lLine.substring(0, 2);
-                String lTransactionEventName = lLine.substring(3, 24).trim();
+                String lTransactionEventName = lLine.substring(3, 23);
+                if (lTransactionEventName == null)
+                {
+                    // If the event name is null, this means that we are
+                    // processing an end of file line
+                    // (i.e. an "00                      000000 00000") line
+                    // We do not need to process this line so skip it
+                    continue;
+                }
 
                 // Date (This is only used if the transaction is "create")
-                String lDate = lLine.substring(26, 33);
+                String lDate = lLine.substring(24, 30);
 
                 // Number of tickets in the transaction
-                String lNumTicketsTransaction = lLine.substring(35);
+                String lNumTicketsTransaction = lLine.substring(31);
+
+                // todo remove
+                System.out.println("lTransactionCode: " + lTransactionCode +
+                        " length: " + lTransactionCode.length());
+                System.out.println("lTransactionEventName: " +
+                        lTransactionEventName + " length: " +
+                        lTransactionEventName.length());
+                System.out.println("lDate: " + lDate + " length: " + lDate
+                        .length());
+                System.out.println("lNumTicketsTransaction: " +
+                        lNumTicketsTransaction + " length: " +
+                        lNumTicketsTransaction.length());
 
                 int lNewNumTickets = 0;
 
@@ -117,9 +153,29 @@ public class BackOffice
 
                     // add
                     case "04":
-                        lNewNumTickets = Integer.parseInt(lMasterMap.get
-                                (lTransactionEventName).numberTickets) + Integer
+                        System.out.println("lMasterMap: ");
+                        System.out.println(lMasterMap.isEmpty());
+                        for (String lName : lMasterMap.keySet())
+                        {
+                            System.out.print("lName: " + lName);
+                            System.out.println(lName.length() + " get(): " +
+                                    lMasterMap.get(lName).numberTickets);
+                        }
+
+                        System.out.println("lNumTicketsTransaction: " + lNumTicketsTransaction);
+
+                        System.out.println("******: " + lTransactionEventName + "LENGTH: " + lTransactionEventName.length());
+//                        System.out.println("NUMBER TICKETS: " + lMasterMap.get
+//                                (lTransactionEventName).numberTickets);
+                        int loldTickets = Integer.parseInt(lMasterMap.get
+                                (lTransactionEventName).numberTickets);
+                        int lMoreTickets = Integer
                                 .parseInt(lNumTicketsTransaction);
+//                        lNewNumTickets = Integer.parseInt(lMasterMap.get
+//                                (lTransactionEventName).numberTickets) + Integer
+//                                .parseInt(lNumTicketsTransaction);
+
+                        lNewNumTickets = loldTickets + lMoreTickets;
 
                         lMasterLineInfo = new MasterEventTransactionsInfo
                                 (lDate, Integer.toString(lNewNumTickets),
@@ -140,42 +196,47 @@ public class BackOffice
                 }
             }
 
+            lBufferedReader.close();
+
             // Clear current content from master events file
             FileWriter lFW_Master = new FileWriter(aInMasterEventFile);
             lFW_Master.write("");
             lFW_Master.close();
 
             // Clear current content from current events file
-            lFW_Master = new FileWriter(aInCurrentEventsFile);
-            lFW_Master.write("");
-            lFW_Master.close();
+            FileWriter lFW_CurrentEvents = new FileWriter(aInCurrentEventsFile);
+            lFW_CurrentEvents.write("");
+            lFW_CurrentEvents.close();
 
             // Instantiate new FileWriter that appends instead of of overwrite
             // for both master events file and current events file
-            lFW_Master = new FileWriter(aInMasterEventFile, true);
+            FileWriter lFW_MasterEvent = new FileWriter(aInMasterEventFile, true);
             FileWriter lFW_Current_Events = new FileWriter
                     (aInCurrentEventsFile, true);
 
-            // Write lMasterMap line by line to master events file and
-            // todo - probably need to change data structure from map to
-            // todo something else because Maps don't guarantee ordering of
-            // content
+            // Write lMasterMap line by line to master events file and content
+            
+            int lCount = 0;
+            int lEnd = lMasterMap.size();
             for (String lKey : lMasterMap.keySet())
             {
+                lCount++;
+                lFW_MasterEvent.write(lMasterMap.get(lKey).date + " ");
+                lFW_MasterEvent.write(lMasterMap.get(lKey).numberTickets + " ");
+
                 // lKey is the event name
-                lFW_Master.write(lMasterMap.get(lKey).date);// + " ");
-                lFW_Master.write(lMasterMap.get(lKey).numberTickets + " ");
-                lFW_Master.write(lKey + "\n");
+                lFW_MasterEvent.write(lKey + "\n");
 
                 lFW_Current_Events.write(lKey + " ");
-                lFW_Current_Events.write(lMasterMap.get(lKey).numberTickets +
-                        "\n");
+                lFW_Current_Events.write(lMasterMap.get(lKey).numberTickets);
+                
+                if (lCount < lEnd)
+                {
+                    lFW_Current_Events.write("\n");
+                }
             }
 
-            // todo Delete new line at end of master event file and current
-            // todo events file
-
-            lFW_Master.close();
+            lFW_MasterEvent.close();
             lFW_Current_Events.close();
         }
         catch (FileNotFoundException e)
