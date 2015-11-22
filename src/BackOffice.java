@@ -96,6 +96,7 @@ public class BackOffice
                 String lNumTicketsTransaction = lLine.substring(31);
 
                 // todo remove
+                System.out.println("YO test");
                 System.out.println("lTransactionCode: " + lTransactionCode +
                         " length: " + lTransactionCode.length());
                 System.out.println("lTransactionEventName: " +
