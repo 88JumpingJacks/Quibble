@@ -64,5 +64,11 @@ public class Constants
     public static final String ERROR_EXCEED_DATE_RANGE = ERROR_PREFIX +
             "Event date is more than " + MAX_DATE_RANGE_YEARS + " years from " +
             "the current date";
+
+    // Back Office specific errors
+    // Back Office prefix
+    public static final String BACK_OFFICE = "Back Office ";
+    public static final String ERROR_EVENT_DATE_PAST = ERROR_PREFIX + "Event " +
+            "date is in the past.";
 }
 

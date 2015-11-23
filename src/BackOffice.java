@@ -1,4 +1,7 @@
+import com.sun.tools.internal.jxc.ap.Const;
+
 import java.io.*;
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -43,18 +46,17 @@ public class BackOffice
                 System.out.println("IN WHILE");
 
                 System.out.println("lLine: " + lLine);
-                // Split lLine by white space twice
-//                String[] lLineArray = lLine.split("\\s+", 3);
                 String[] lLineArray = new String[3];
                 lLineArray[0] = lLine.substring(0, 6);
                 lLineArray[1] = lLine.substring(7, 12);
                 lLineArray[2] = lLine.substring(13, 33);
 
-                System.out.println("lLineArray length: " + lLineArray.length);
-                for (String yo : lLineArray)
-                {
-                    System.out.println("yo: " + yo);
-                }
+                // todo remove
+//                System.out.println("lLineArray length: " + lLineArray.length);
+//                for (String yo : lLineArray)
+//                {
+//                    System.out.println("yo: " + yo);
+//                }
 
                 String lDate = lLineArray[0];
                 String lNumTickets = lLineArray[1];
@@ -66,7 +68,8 @@ public class BackOffice
                         lMasterEventName);
 
                 lMasterMap.put(lMasterEventName, lMasterLineInfo);
-                System.out.println("JUST PUT IN MAP: " + lMasterMap.get(lMasterEventName));
+                System.out.println("JUST PUT IN MAP: " + lMasterMap.get
+                        (lMasterEventName));
             }
 
             lFileReader = new FileReader
@@ -91,6 +94,34 @@ public class BackOffice
 
                 // Date (This is only used if the transaction is "create")
                 String lDate = lLine.substring(24, 30);
+                
+                int lYear = Integer.parseInt(lDate.substring
+                        (0, 2));
+                int lMonth = Integer.parseInt(lDate.substring
+                        (2, 4));
+                int lDay = Integer.parseInt(lDate.substring
+                        (4, 6));
+                
+                // Only create transaction corresponds with a real date
+                // All other transactions has a default "000000" date so
+                // we do not want to check the date unless it's a create 
+                // transaction
+                if (lYear != 0 && lMonth != 0 && lDay != 0)
+                {
+                    LocalDate lEventDate = LocalDate.of(2000 + lYear,
+                            lMonth, lDay);
+                    LocalDate lToday = LocalDate.now();
+
+                    // If the event's date has passed, do not include it in the
+                    // new master events file and do not process the transaction
+                    if (lEventDate.isBefore(lToday))
+                    {
+                        System.out.println(Constants.BACK_OFFICE + Constants
+                                .ERROR_EVENT_DATE_PAST);
+                        continue;
+                    }
+                }
+
 
                 // Number of tickets in the transaction
                 String lNumTicketsTransaction = lLine.substring(31);
@@ -121,6 +152,21 @@ public class BackOffice
                                 (lTransactionEventName).numberTickets) - Integer
                                 .parseInt(lNumTicketsTransaction);
 
+                        // Check that there are a positive number of tickets
+                        // remaining. We stored all the event names and updated 
+                        // number of tickets in a HashMap and the values aren't 
+                        // written to the master events file until after 
+                        // processing so we can just check the number of 
+                        // tickets 
+                        // value stored in the HashMap and throw and error
+                        // if the updated value is less than 0
+                        if (lNewNumTickets < 0)
+                        {
+                            System.out.println(Constants.BACK_OFFICE + Constants
+                                    .ERROR_INSUFFICIENT_TICKETS);
+                            continue;
+                        }
+
                         lMasterLineInfo = new MasterEventTransactionsInfo
                                 (lDate, Integer.toString(lNewNumTickets),
                                         lTransactionEventName);
@@ -145,6 +191,15 @@ public class BackOffice
 
                     // create
                     case "03":
+                        // Check that there is no event already existing for 
+                        // the transaction
+                        if (lMasterMap.containsKey(lTransactionEventName))
+                        {
+                            System.out.println(Constants.BACK_OFFICE +
+                                    Constants.ERROR_EVENT_ALREADY_EXISTS);
+                            continue;
+                        }
+
                         lMasterLineInfo = new MasterEventTransactionsInfo
                                 (lDate, lNumTicketsTransaction,
                                         lTransactionEventName);
@@ -163,18 +218,17 @@ public class BackOffice
                                     lMasterMap.get(lName).numberTickets);
                         }
 
-                        System.out.println("lNumTicketsTransaction: " + lNumTicketsTransaction);
+                        System.out.println("lNumTicketsTransaction: " +
+                                lNumTicketsTransaction);
 
-                        System.out.println("******: " + lTransactionEventName + "LENGTH: " + lTransactionEventName.length());
+                        System.out.println("******: " + lTransactionEventName
+                                + "LENGTH: " + lTransactionEventName.length());
 //                        System.out.println("NUMBER TICKETS: " + lMasterMap.get
 //                                (lTransactionEventName).numberTickets);
                         int loldTickets = Integer.parseInt(lMasterMap.get
                                 (lTransactionEventName).numberTickets);
                         int lMoreTickets = Integer
                                 .parseInt(lNumTicketsTransaction);
-//                        lNewNumTickets = Integer.parseInt(lMasterMap.get
-//                                (lTransactionEventName).numberTickets) + Integer
-//                                .parseInt(lNumTicketsTransaction);
 
                         lNewNumTickets = loldTickets + lMoreTickets;
 
@@ -211,12 +265,13 @@ public class BackOffice
 
             // Instantiate new FileWriter that appends instead of of overwrite
             // for both master events file and current events file
-            FileWriter lFW_MasterEvent = new FileWriter(aInMasterEventFile, true);
+            FileWriter lFW_MasterEvent = new FileWriter(aInMasterEventFile,
+                    true);
             FileWriter lFW_Current_Events = new FileWriter
                     (aInCurrentEventsFile, true);
 
             // Write lMasterMap line by line to master events file and content
-            
+
             int lCount = 0;
             int lEnd = lMasterMap.size();
             for (String lKey : lMasterMap.keySet())
@@ -230,7 +285,7 @@ public class BackOffice
 
                 lFW_Current_Events.write(lKey + " ");
                 lFW_Current_Events.write(lMasterMap.get(lKey).numberTickets);
-                
+
                 if (lCount < lEnd)
                 {
                     lFW_Current_Events.write("\n");

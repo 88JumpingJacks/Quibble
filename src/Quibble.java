@@ -240,6 +240,8 @@ public class Quibble
                 lFW.write(String.format("%n"));
             }
 
+            // todo maybe need to remove the newline after last write?
+            
             // Write logout transaction
             lFW.write("00                      000000 00000");
 
