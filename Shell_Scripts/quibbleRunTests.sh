@@ -39,8 +39,9 @@ do
     # Linux ">" (write command output to file, used in line above) automatically
     # adds a newline character to the end of the file so we need to remove this
     # as it is not part of Quibble output by using printf %s
+
     printf %s "$(java Quibble < $INPUT_FILE)" > $CONSOLE_OUTPUT_DIR/"$COMPONENT_NAME_NUMBER"_out.log
 
-    DAILY_EVENT_TRANSACTION_FILE="../Daily_Event_Transaction_File"
+    DAILY_EVENT_TRANSACTION_FILE="../../Quibble_Files/Daily_Event_Transaction_File"
     cp $DAILY_EVENT_TRANSACTION_FILE $TRANSACTIONS_OUTPUT_DIR/"$COMPONENT_NAME_NUMBER".trn
 done

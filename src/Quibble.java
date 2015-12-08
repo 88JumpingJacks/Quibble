@@ -1,6 +1,5 @@
 import java.io.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -10,7 +9,7 @@ import java.util.*;
  * Ticket Service software and creates an event transactions file detailing
  * the session's transactions upon logout.
  * Quibble component functionality is also defined here.
- *
+ * <p>
  * Quibble is a command line based software product and is assumed to be run
  * from a shell script in the /Shell_Scripts folder of this Java project.
  * Hence the directory names are not compatible with running the java program
@@ -83,17 +82,6 @@ public class Quibble
         monthsAndNumberDays.put(11, 30);
         monthsAndNumberDays.put(12, 31);
 
-        // todo remove in future iteration, this call shouldn't be front end
-        // todo it's a rapid prototype for now ;-)
-        System.out.println(System.getProperty("user.dir"));
-//        BackOffice.processTransactions(new File("../Master_Events_File"),
-//                new File("../Current_Events_File"),
-//                new File("../Merged_Event_Transaction_Files"));
-        BackOffice.processTransactions(new File("./Master_Events_File"),
-                new File("./Current_Events_File"),
-                new File("./Merged_Event_Transaction_Files"));
-
-
         // User cannot end a Quibble instance unless there is an error
         // They can only log out of their session and this will bring them
         // back to the initial login state again
@@ -141,9 +129,13 @@ public class Quibble
         // Process current events file in main() because it's only done once
         try
         {
-            File lCurrentEventsFile = new File("../Current_Events_File");
+            // Quibble files are located in this directory path
+            String lFilesDir = "../../Quibble_Files/";
+
+            File lCurrentEventsFile = new File(lFilesDir + 
+                    "Current_Events_File");
             outputFile_daily_Event_Transactions = new File
-                    ("../Daily_Event_Transaction_File");
+                    (lFilesDir + "Daily_Event_Transaction_File");
 
             // Read events and dates from current events file
             // Assume that it is provided (no error checking for this release)
@@ -235,13 +227,16 @@ public class Quibble
             for (int lCounter = 0; lCounter < dailyEventTransactionsList.size();
                  lCounter++)
             {
-                System.out.println("transaction" + dailyEventTransactionsList.get(lCounter).toString());
                 lFW.write(dailyEventTransactionsList.get(lCounter).toString());
-                lFW.write(String.format("%n"));
+
+                if (lCounter < dailyEventTransactionsList.size())
+                {
+                    lFW.write(String.format("%n"));
+                }
             }
 
             // todo maybe need to remove the newline after last write?
-            
+
             // Write logout transaction
             lFW.write("00                      000000 00000");
 
