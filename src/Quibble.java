@@ -14,7 +14,6 @@ import java.util.*;
  * from a shell script in the /Shell_Scripts folder of this Java project.
  * Hence the directory names are not compatible with running the java program
  * from another folder
- * test
  */
 public class Quibble
 {
