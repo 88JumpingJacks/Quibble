@@ -130,7 +130,7 @@ public class Quibble
         try
         {
             // Quibble files are located in this directory path
-            String lFilesDir = "../../Quibble_Files/";
+            String lFilesDir = "../../Quibble_Files_Assignment6/";
 
             File lCurrentEventsFile = new File(lFilesDir + 
                     "Current_Events_File");
@@ -235,8 +235,6 @@ public class Quibble
                 }
             }
 
-            // todo maybe need to remove the newline after last write?
-
             // Write logout transaction
             lFW.write("00                      000000 00000");
 
@@ -289,7 +287,6 @@ public class Quibble
             aInNumberTickets)
     {
         // todo cannot implement because there is no backend in this phase
-
     }
 
     /**
